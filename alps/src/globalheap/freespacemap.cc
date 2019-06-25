@@ -15,10 +15,13 @@
  */
 
 #include "globalheap/freespacemap.hh"
+
 #include <stddef.h>
 #include <stdint.h>
+
+#include "alps/common/error_code.hh"
+
 #include "common/debug.hh"
-#include "common/error_code.hh"
 #include "globalheap/helper.hh"
 #include "globalheap/zone_heap.hh"
 

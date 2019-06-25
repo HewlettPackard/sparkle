@@ -1,0 +1,7 @@
+tasks:
+#- pexec:
+#    client.0:
+#      - "{alps_install_dir}/bin/test-util cleanup --test_dir=/lfs"
+- pexec:
+    clients:
+      - "{alps_test_dir}/test_pegas --use_environ=on --test_dir=/lfs -r {role} PegasTest.create_truncate"

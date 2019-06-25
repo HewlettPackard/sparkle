@@ -20,10 +20,10 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "pegasus/helper_functions.hh"
-#include "pegasus/pointer.hh"
-#include "pegasus/region_tmpl.hh"
 #include "globalheap/extent.hh"
 #include "globalheap/layout.hh"
 

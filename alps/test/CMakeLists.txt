@@ -15,6 +15,7 @@
 #
 
 include_directories(${PROJECT_SOURCE_DIR}/third-party/gtest/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
 #SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -22,5 +23,13 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 #SET(CMAKE_INSTALL_RPATH "build/src/alps")
 #SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
+add_definitions(${ARCH_DEFS})
+
 add_subdirectory(unit)
-#add_subdirectory(integration)
+add_subdirectory(integration)
+
+
+add_executable(test-util ${CMAKE_CURRENT_SOURCE_DIR}/util.cc)
+target_link_libraries(test-util pthread ${GTEST_LIBRARY} alps ${Boost_PROGRAM_OPTIONS_LIBRARY} gtest)
+
+install (TARGETS test-util DESTINATION bin)

@@ -19,7 +19,9 @@
 
 #include <string>
 #include <boost/filesystem.hpp>
-#include "pegasus/pegasus_options.hh"
+
+#include "alps/pegasus/pegasus_options.hh"
+
 #include "pegasus/region_file.hh"
 
 /*
@@ -53,7 +55,7 @@ public:
         : pathname_(pathname),
           xpathname_(xpathname),
           fd_(-1),
-          booksize_(pegasus_options.tmpfs_options.booksize)
+          booksize_(pegasus_options.tmpfs_options.book_size_bytes)
     { }
 
     ~TmpfsRegionFile() {};  

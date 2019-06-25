@@ -17,14 +17,69 @@
 #include <fcntl.h>
 #include <sys/file.h>
 
+#ifdef __ARCH_FAM__
+#include <fam_atomic.h>
+#endif // __ARCH_FAM__
 
-#include "common/assorted_func.hh"
+#include "alps/common/assorted_func.hh"
+
 #include "globalheap/layout.hh"
 
 namespace alps {
 
 
 
+#ifdef __ARCH_FAM__
+RRegion::TPtr<LeaseSuperblock> LeaseSuperblock::make(RRegion::TPtr<LeaseSuperblock> superblock)
+{
+    fam_atomic_64_write(&superblock->generation, 1);
+    return superblock;
+}
+
+
+Generation LeaseSuperblock::incr_generation()
+{
+    Generation gen = fam_atomic_64_fetch_add(&generation, 1);
+
+    return gen;
+}
+
+
+RRegion::TPtr<Lease> Lease::make(RRegion::TPtr<Lease> lease) 
+{
+    fam_atomic_64_write(&lease->lock, kUnlocked);
+    return lease;
+} 
+
+
+uint32_t Lease::lock_status()
+{
+    return fam_atomic_64_read(&lock);
+}
+
+
+int Lease::try_lock(Generation owner)
+{
+    int ret;
+    
+    assert(is_aligned(&lock, kCacheLineSize) == true);
+
+    if (fam_atomic_64_compare_store(&lock, kUnlocked, owner) == kUnlocked) {
+        ret = 0;
+    } else {
+        ret = -1;
+    }
+
+    return ret;
+}
+
+
+void Lease::unlock()
+{
+    fam_atomic_64_write(&lock, kUnlocked);
+}
+
+#endif // __ARCH_FAM__
 
 
 #ifndef __ARCH_FAM__

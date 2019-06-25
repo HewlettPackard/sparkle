@@ -14,30 +14,46 @@
 # limitations under the License.
 #
 
+include_directories(${PROJECT_SOURCE_DIR}/test)
 include_directories(${PROJECT_SOURCE_DIR}/test/unit)
 
-function (add_alps_test2 targetname srcname binname)
+function (__build_and_install_alps_test targetname srcname binname)
   add_executable(${targetname} ${CMAKE_CURRENT_SOURCE_DIR}/${srcname}.cc)
   set_target_properties(${targetname} PROPERTIES OUTPUT_NAME ${binname})
   target_link_libraries(${targetname} pthread gtest alps)
-  target_link_libraries(${targetname} testcommon)
-  add_test(NAME ${targetname} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${binname})
   install (TARGETS ${targetname} DESTINATION bin/test/unit COMPONENT test)
 endfunction()
 
+function (__add_alps_test targetname srcname binname)
+  __build_and_install_alps_test(${targetname} ${targetname} ${targetname})
+  add_test(NAME tmpfs_${targetname} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${binname})
+  add_test(NAME lfs_${targetname} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${binname} --test_dir=/lfs)
+endfunction()
+
+function (__add_alps_test_tmpfs_only targetname srcname binname)
+  __build_and_install_alps_test(${targetname} ${targetname} ${targetname})
+  add_test(NAME tmpfs_${targetname} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${binname})
+endfunction()
+
+function (__add_alps_test_lfs_only targetname srcname binname)
+  __build_and_install_alps_test(${targetname} ${targetname} ${targetname})
+  add_test(NAME lfs_${targetname} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${binname} --test_dir=/lfs)
+endfunction()
+
 function (add_alps_test targetname)
-  add_alps_test2(${targetname} ${targetname} ${targetname})
+  __add_alps_test(${targetname} ${targetname} ${targetname})
+endfunction()
+
+function (add_alps_test_tmpfs_only targetname)
+  __add_alps_test_tmpfs_only(${targetname} ${targetname} ${targetname})
+endfunction()
+
+function (add_alps_test_lfs_only targetname)
+  __add_alps_test_lfs_only(${targetname} ${targetname} ${targetname})
 endfunction()
 
 
-## Common functionality used by tests 
-set(testcommon_src
-	${CMAKE_CURRENT_SOURCE_DIR}/test_common.cc
-)
-
-add_library(testcommon STATIC ${testcommon_src})
-target_link_libraries(testcommon boost_program_options)
-
 add_subdirectory(common)
 add_subdirectory(globalheap)
+add_subdirectory(l4tm)
 add_subdirectory(pegasus)

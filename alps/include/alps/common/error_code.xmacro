@@ -1,0 +1,95 @@
+/* 
+ * (c) Copyright 2016 Hewlett Packard Enterprise Development LP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Syntax: X(<error code name>, <integer value of the error code>, <error message>)
+ *
+ * To add new errors, just insert at an arbitrary place, but note that the value of
+ * error codes must be unique. To maintain that as easy as possible, you keep the entries
+ * sorted by the value.
+ *
+ * A general naming rule: kErrorCode<module name>_<error name>.
+ * For example, kErrorCodeEngineInvalidOption.
+ * A general error code like out-of-memory might omit module names.
+ */
+
+X(kErrorCodeGeneric,                0x0001, "GENERAL: Generic error")
+X(kErrorCodeOutofmemory,            0x0002, "GENERAL: Out of memory")
+X(kErrorCodeInvalidParameter,       0x0003, "GENERAL: Invalid parameter given")
+X(kErrorCodeAlreadyInitialized,     0x0004, "GENERAL: Already initialized")
+X(kErrorCodeBatchedError,           0x0005, "GENERAL: More than one errors observed")
+X(kErrorCodeDepedentModuleUnavailableInit,      0x0006, "GENERAL: A dependent module is not initialized yet. This implies a wrong initialization order in EnginePimpl.")
+X(kErrorCodeDepedentModuleUnavailableUninit,    0x0007, "GENERAL: A dependent module is already uninitialized. This implies a wrong uninitialization order in EnginePimpl.")
+X(kErrorCodeBeingShutdown,          0x0008, "GENERAL: The engine is being shutdown.")
+X(kErrorCodeTimeout,                0x0009, "GENERAL: Timeout.")
+X(kErrorCodeNotImplemented,         0x000A, "GENERAL: Not implemented yet.")
+X(kErrorCodeSessionExpired,         0x000B, "GENERAL: The session has expired.")
+X(kErrorCodeUserDefined,            0x000C, "GENERAL: User-defined error. The meaning of this error depends on the user code.")
+X(kErrorCodeInternalError,          0x000D, "GENERAL: Other uncategorized errors.")
+
+X(kErrorCodeOsMProtectFailed,       0x000E, "GENERAL: OS: mprotect() failed.")
+
+X(kErrorCodeEnvPrescreenFailed,     0x000F, "GENERAL: Pre-screening of the environment detected"
+    " an issue before start up. This is caused by a misconfiguration on the environment or the"
+    " given parameters. See the console output for more detailed diagnostics.")
+
+X(kErrorCodeNotSupported,           0x0010, "GENERAL: Operation not supported.")
+
+X(kErrorCodeEngineInvalidOption,    0x0110, "ENGINE : Invalid Option")
+
+X(kErrorCodeFsAlreadyOpened,    0x0201, "FILESYS: Already opened")
+X(kErrorCodeFsFailedToOpen,     0x0202, "FILESYS: Failed to open a file")
+X(kErrorCodeFsFailedToClose,    0x0203, "FILESYS: Failed to close a file")
+X(kErrorCodeFsBadSeekInput,     0x0204, "FILESYS: Invalid arguments for seek()")
+X(kErrorCodeFsSeekFailed,       0x0205, "FILESYS: File seek failed")
+X(kErrorCodeFsBufferTooSmall,   0x0206, "FILESYS: File buffer is too small")
+X(kErrorCodeFsBufferNotAligned, 0x0207, "FILESYS: File buffer is not aligned")
+X(kErrorCodeFsTooShortRead,     0x0208, "FILESYS: Reached end of file before completing reads")
+X(kErrorCodeFsExcessRead,       0x0209, "FILESYS: Read more than expected")
+X(kErrorCodeFsWriteFail,        0x020A, "FILESYS: File write failed.")
+X(kErrorCodeFsExcessWrite,      0x020B, "FILESYS: Wrote more than expected")
+X(kErrorCodeFsNotOpened,        0x020C, "FILESYS: File not opened yet or failed to open.")
+X(kErrorCodeFsSyncFailed,       0x020D, "FILESYS: fsync() failed.")
+X(kErrorCodeFsMkdirFailed,      0x020E, "FILESYS: Failed to create a directory")
+X(kErrorCodeFsTruncateFailed,   0x020F, "FILESYS: File truncation failed")
+X(kErrorCodeFsResultNotAligned, 0x0210, "FILESYS: Direct I/O operation resulted in non-aligned count of bytes. Filesyste bug?")
+X(kErrorCodeFsNameTooLong,      0x0211, "FILESYS: Pathname was too long.")
+X(kErrorCodeFsStatFailed,       0x0212, "FILESYS: stat() failed.")
+X(kErrorCodeFsUnlinkFailed,     0x0213, "FILESYS: unlink() failed.")
+X(kErrorCodeFsSetxattrFailed,   0x0214, "FILESYS: Failed to write file extended attribute.")
+X(kErrorCodeFsGetxattrFailed,   0x0215, "FILESYS: Failed to read file extended attribute.")
+X(kErrorCodeFsUnknownFSType,    0x0216, "FILESYS: Unknown file system type")
+X(kErrorCodeFsNoDirectory,      0x0217, "FILESYS: Directory does not exist")
+
+X(kErrorCodeMemoryNoFreePages,      0x0301, "MEMORY : Not enough free volatile pages. Check the config of MemoryOptions")
+X(kErrorCodeMemoryDuplicateMapping, 0x0302, "MEMORY : Duplicate mapping in logical address space.")
+X(kErrorCodeMemoryUnknownMapping,   0x0303, "MEMORY : Unknown mapping.")
+X(kErrorCodeMemoryNumaUnavailable,  0x0304, "MEMORY : NUMA library is not available.")
+X(kErrorCodeMemoryMapFailed,        0x0305, "MEMORY : Memory map failed.")
+X(kErrorCodeMemoryUnmapFailed,      0x0306, "MEMORY : Memory unmap failed.")
+X(kErrorCodeMemoryInvalidAddress,   0x0307, "MEMORY : Invalid address.")
+
+X(kErrorCodeConfParseFailed,        0x0401, "CONFIG : Config file parsing failed. This usually means an invalid YAML file.")
+X(kErrorCodeConfValueOutofrange,    0x0402, "CONFIG : Configuration value out of range.")
+X(kErrorCodeConfMissingElement,     0x0403, "CONFIG : The yaml element is missing in the config file.")
+X(kErrorCodeConfInvalidElement,     0x0404, "CONFIG : An invalid valud in the xml element.")
+X(kErrorCodeConfEmptyXml,           0x0405, "CONFIG : No root element in the xml.")
+X(kErrorCodeConfFileNotFound,       0x0406, "CONFIG : The file doesn't exist.")
+X(kErrorCodeConfCouldNotWrite,      0x0407, "CONFIG : Failed to write a configuration file.")
+X(kErrorCodeConfCouldNotRename,     0x0408, "CONFIG : Failed to atomically rename the temporary file to destination.")
+X(kErrorCodeConfMkdirsFailed,       0x0409, "CONFIG : Failed to create a directory. Check permissions.")
+
+

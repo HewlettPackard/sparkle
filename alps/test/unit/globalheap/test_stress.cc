@@ -19,11 +19,10 @@
 #include <cinttypes>
 #include <vector>
 #include <thread>
+
 #include <boost/interprocess/offset_ptr.hpp>
-// Dynamically bounded intervals
 #include <boost/icl/discrete_interval.hpp>
 #include <boost/icl/continuous_interval.hpp>
-// Statically bounded intervals
 #include <boost/icl/right_open_interval.hpp>
 #include <boost/icl/left_open_interval.hpp>
 #include <boost/icl/closed_interval.hpp>
@@ -34,8 +33,8 @@
 #include <boost/icl/separate_interval_set.hpp>
 
 #include "gtest/gtest.h"
+#include "alps/globalheap/globalheap.hh"
 
-#include "globalheap/globalheap.hh"
 #include "globalheap/globalheap_internal.hh"
 #include "test_common.hh"
 #include "test_heap_fixture.hh"

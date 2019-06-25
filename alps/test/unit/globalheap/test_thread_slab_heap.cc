@@ -16,13 +16,12 @@
 
 #include <fcntl.h>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
-#include "pegasus/address_space.hh"
-#include "pegasus/region_tmpl.hh"
-#include "test_common.hh"
-#include "test_heap_fixture.hh"
+#include "alps/pegasus/address_space.hh"
+#include "alps/pegasus/relocatable_region.hh"
 #include "globalheap/process_slab_heap.hh"
 #include "globalheap/thread_slab_heap.hh"
+#include "test_common.hh"
+#include "test_heap_fixture.hh"
 
 using namespace alps;
 

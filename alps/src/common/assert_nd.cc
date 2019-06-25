@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
 
 #include <iostream>
 #include <sstream>

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "alps/common/error_code.hh"
+
 #include "globalheap/thread_slab_heap.hh"
 #include "globalheap/process_slab_heap.hh"
 #include "globalheap/slab_heap.hh"

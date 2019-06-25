@@ -15,8 +15,10 @@
  */
 
 #include "globalheap/zone_heap.hh"
-#include "common/error_code.hh"
-#include "common/error_stack.hh"
+
+#include "alps/common/error_code.hh"
+#include "alps/common/error_stack.hh"
+
 #include "common/debug.hh"
 #include "globalheap/zone.hh"
 

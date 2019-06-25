@@ -22,13 +22,13 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 
-#include "pegasus/pegasus.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
+#include "alps/pegasus/pegasus.hh"
+#include "alps/pegasus/relocatable_region.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "pegasus/topology.hh"
 #include "pegasus/topology_factory.hh"
 #include "globalheap/layout.hh"
-#include "globalheap/memattrib.hh"
 #include "globalheap/memattrib_alloc.hh"
 #include "globalheap/memattrib_heap.hh"
 

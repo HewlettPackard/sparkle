@@ -18,8 +18,10 @@
 #define _ALPS_PEGASUS_HELPER_FUNCTIONS_HH_
 
 #include <vector>
+
 #include <boost/filesystem.hpp>
-#include "common/error_code.hh"
+
+#include "alps/common/error_code.hh"
 
 namespace alps {
 

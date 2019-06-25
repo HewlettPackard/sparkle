@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "alps/common/error_code.hh"
+
 #include "globalheap/process_slab_heap.hh"
 
 namespace alps {

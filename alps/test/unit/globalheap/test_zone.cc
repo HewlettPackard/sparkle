@@ -17,9 +17,7 @@
 #include <fcntl.h>
 #include <sstream>
 #include "gtest/gtest.h"
-#include "common/assert_nd.hh"
-#include "common/error_stack.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/pegasus/relocatable_region.hh"
 #include "globalheap/freespacemap.hh"
 #include "globalheap/layout.hh"
 #include "globalheap/zone.hh"

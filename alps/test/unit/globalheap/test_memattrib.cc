@@ -15,7 +15,8 @@
  */
 
 #include "gtest/gtest.h"
-#include "globalheap/memattrib.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/memattrib_alloc.hh"
 
 using namespace alps;

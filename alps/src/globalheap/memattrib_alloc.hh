@@ -19,7 +19,8 @@
 
 #include <map>
 
-#include "globalheap/memattrib.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/rwlock.hh"
 
 namespace alps {

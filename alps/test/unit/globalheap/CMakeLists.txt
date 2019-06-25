@@ -16,7 +16,7 @@
 
 function (add_globalheap_test targetname) 
   add_alps_test(${targetname})
-  target_link_libraries(${targetname} alps boost_thread boost_filesystem)
+  target_link_libraries(${targetname} alps ${Boost_THREAD_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 endfunction()
 
 add_globalheap_test(test_bitmap)

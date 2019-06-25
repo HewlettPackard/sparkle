@@ -15,8 +15,9 @@
  */
 
 #include "globalheap/slab_heap.hh"
-#include "pegasus/pointer.hh"
-#include "pegasus/region_tmpl.hh"
+
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "globalheap/extent.hh"
 #include "globalheap/extentheap.hh"
 #include "globalheap/layout.hh"

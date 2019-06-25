@@ -18,7 +18,7 @@
 #define _ALPS_PEGASUS_VMAREA_HH_
 
 #include <iostream>
-#include "pegasus/addr.hh"
+#include "alps/pegasus/addr.hh"
 
 namespace alps {
 

@@ -15,16 +15,19 @@
  */
 
 #include "pegasus/region_file_factory.hh"
+
 #include <stdio.h>
 #include <libgen.h>
 #include <sys/mman.h>
 #include <string.h>
 #include <iostream>
 #include <boost/filesystem.hpp>
-#include "common/assert_nd.hh"
-#include "common/debug.hh"
-#include "common/error_code.hh"
+
+#include "alps/common/assert_nd.hh"
+#include "alps/common/error_code.hh"
+
 #include "common/os.hh"
+#include "common/debug.hh"
 #include "pegasus/region_file.hh"
 #include "pegasus/multi_region_file.hh"
 

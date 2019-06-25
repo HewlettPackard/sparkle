@@ -1,0 +1,11 @@
+tasks:
+- pexec:
+    clients:
+      - "{testbindir}/test_topology --test_dir=/lfs -r {role} TopologyTest.nearest_ig"
+
+- exec:
+    client.0:
+      - rm -rf /lfs/*.test
+- pexec:
+    clients:
+      - "{testbindir}/test_topology --test_dir=/lfs -r {role} TopologyTest.interleave_group"

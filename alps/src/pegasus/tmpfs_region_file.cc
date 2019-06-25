@@ -75,8 +75,18 @@
 #include <boost/archive/binary_oarchive.hpp> 
 #include <boost/archive/binary_iarchive.hpp> 
 
+#ifdef __ARCH_FAM__
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <fam_atomic.h>
+#ifdef __cplusplus
+}
+#endif
+#endif // __ARCH_FAM__
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
+
 #include "common/debug.hh"
 #include "common/os.hh"
 
@@ -224,10 +234,10 @@ ErrorCode TmpfsRegionFile::__alloc_physical_frames(int fd, loff_t offset, loff_t
     switch (interleave_policy_) {
         // allocate based on the user's interleave request
         case kPreciseAllocate:
-            if (map.find("user.interleave_request") == map.end()) {
+            if (map.find("user.LFS.InterleaveRequest") == map.end()) {
                 interleave_request = "";
             } else {
-                interleave_request = map["user.interleave_request"];
+                interleave_request = map["user.LFS.InterleaveRequest"];
             }
             break;
 
@@ -276,7 +286,7 @@ ErrorCode TmpfsRegionFile::__alloc_physical_frames(int fd, loff_t offset, loff_t
     }
 
     // describe where each book in the file is allocated 
-    map["user.interleave"] = interleave_request;
+    map["user.LFS.Interleave"] = interleave_request;
     save_xattr_map(xpathname_.c_str(), map);
 
     return kErrorCodeOk;
@@ -418,7 +428,8 @@ ErrorCode TmpfsRegionFile::getxattr(const char *name, void *value, size_t size)
         return kErrorCodeGeneric;
     }
     std::string vval = map[std::string(name)];
-    memcpy(value, vval.c_str(), vval.size());
+    size_t cp_size = size < vval.size() ? size : vval.size();
+    memcpy(value, vval.c_str(), cp_size);
 
     tmpfs_release_global();
 
@@ -465,6 +476,11 @@ ErrorCode TmpfsRegionFile::map(void* addr_hint, size_t length, int prot, int fla
     }
     LOG(trace) << "mmap addr_hint: " << addr_hint << ", length: " << length << ", fd: " << fd_ << ", offset: " << offset << ", ret: " << p;
 
+#ifdef __ARCH_FAM__
+    LOG(trace) << "registering region with the fam atomic library: "
+               << "range_addr: " << p << "--" << (void*) (uintptr_t(p) + length);
+    ASSERT_ND(0 == fam_atomic_register_region(p, length, fd_, offset));
+#endif // __ARCH_FAM__
 
     *mapped_addr = p;
     return kErrorCodeOk;
@@ -477,6 +493,10 @@ ErrorCode TmpfsRegionFile::unmap(void* addr, size_t length)
         return kErrorCodeMemoryUnmapFailed;
     }
 
+#ifdef __ARCH_FAM__
+    LOG(trace) << "unregistering region with the fam atomic library" ;
+    fam_atomic_unregister_region(addr, length);
+#endif // __ARCH_FAM__
 
     return kErrorCodeOk;
 }

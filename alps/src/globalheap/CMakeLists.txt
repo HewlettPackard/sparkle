@@ -33,6 +33,6 @@ set_property(GLOBAL APPEND PROPERTY ALL_ALPS_SRC
 )
 
 add_executable(globalheap-util ${CMAKE_CURRENT_SOURCE_DIR}/util.cc)
-target_link_libraries(globalheap-util pthread ${GTEST_LIBRARY} alps boost_program_options boost_system boost_filesystem)
+target_link_libraries(globalheap-util pthread ${GTEST_LIBRARY} alps ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 install (TARGETS globalheap-util DESTINATION bin)

@@ -1,0 +1,14 @@
+tasks:
+- pexec:
+    client.0:
+#      - "{alps_install_dir}/bin/test-util cleanup --test_dir=/lfs"
+      - "{alps_test_dir}/test_pointer --use_environ=on --test_dir=/lfs -r {role} PointerTestPrepare.prepare"
+- pexec:
+    arbiter:
+      timeout: 60
+      strategy:
+        - client.0:t0:PointerTest.alloc.alloc -> client.1:t0:PointerTest.use.use
+    client.0:
+      - "{alps_test_dir}/test_pointer --use_environ=on --test_dir=/lfs -a {arbiter} -r {role} t0:PointerTest.alloc"
+    client.1:
+      - "{alps_test_dir}/test_pointer --use_environ=on --test_dir=/lfs -a {arbiter} -r {role} t0:PointerTest.use"

@@ -19,9 +19,11 @@
 
 #include <pthread.h>
 #include <set>
+
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/layout.hh"
 #include "globalheap/lease.hh"
-#include "globalheap/memattrib.hh"
 #include "globalheap/rwlock.hh"
 #include "globalheap/zone.hh"
 

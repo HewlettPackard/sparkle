@@ -22,9 +22,10 @@
 #include <stdint.h>
 #include <map>
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/layout.hh"
-#include "globalheap/memattrib.hh"
 #include "globalheap/extent.hh"
 #include "globalheap/zone.hh"
 #include "globalheap/zone_heap.hh"

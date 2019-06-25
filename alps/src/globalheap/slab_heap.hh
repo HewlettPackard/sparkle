@@ -17,10 +17,11 @@
 #ifndef _ALPS_GLOBALHEAP_SLABHEAP_HH_
 #define _ALPS_GLOBALHEAP_SLABHEAP_HH_
 
+#include "alps/common/assert_nd.hh"
+
 #include "globalheap/extentheap.hh"
 #include "globalheap/slab.hh"
 #include "globalheap/nvslab.hh"
-#include "common/assert_nd.hh"
 
 namespace alps {
 

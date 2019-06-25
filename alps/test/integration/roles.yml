@@ -1,0 +1,15 @@
+check-locks: false
+envvars:
+  LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:/usr/local/lib:/home/l4tm/testalps/lib"
+vars:
+  testbindir: /home/l4tm/testalps/bin/test/integration
+roles:
+- [client.0]
+- [client.1]
+- [client.2]
+- [client.3]
+targets:
+  l4tm@192.168.122.171: file /var/tmp/holodeck/images/qemu/l4tm-base/id_rsa
+  l4tm@192.168.122.170: file /var/tmp/holodeck/images/qemu/l4tm-base/id_rsa
+  l4tm@192.168.122.169: file /var/tmp/holodeck/images/qemu/l4tm-base/id_rsa
+  l4tm@192.168.122.172: file /var/tmp/holodeck/images/qemu/l4tm-base/id_rsa

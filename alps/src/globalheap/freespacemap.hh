@@ -17,7 +17,8 @@
 #ifndef _ALPS_GLOBALHEAP_FREESPACEMAP_HH_
 #define _ALPS_GLOBALHEAP_FREESPACEMAP_HH_
 
-#include "common/error_stack.hh"
+#include "alps/common/error_stack.hh"
+
 #include "globalheap/extent.hh"
 #include "globalheap/extentmap.hh"
 

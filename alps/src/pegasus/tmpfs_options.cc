@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#include "pegasus/tmpfs_options.hh"
+#include "alps/pegasus/tmpfs_options.hh"
 
 namespace alps {
 
-ErrorStack TmpfsOptions::load(YAML::Node* node) {
-    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, booksize);
+ErrorStack TmpfsOptions::load(YAML::Node* node, bool ignore_missing) {
+    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, ignore_missing, book_size_bytes);
     return kRetOk;
 }
 
-ErrorStack TmpfsOptions::save(YAML::Emitter& out) const {
+ErrorStack TmpfsOptions::save(YAML::Emitter* out) const {
     return kRetOk;
 }
 

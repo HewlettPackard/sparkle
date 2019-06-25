@@ -18,10 +18,11 @@
 #define _ALPS_GLOBALHEAP_LAYOUT_HH_
 
 #include <stdint.h>
-#include "common/assorted_func.hh"
+
+#include "alps/common/assorted_func.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "common/debug.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
 #include "globalheap/lease.hh"
 #include "globalheap/persist.hh"
 

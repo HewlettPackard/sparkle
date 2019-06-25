@@ -17,9 +17,10 @@
 #ifndef _ALPS_GLOBALHEAP_ZONE_HH_
 #define _ALPS_GLOBALHEAP_ZONE_HH_
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "common/debug.hh"
-#include "pegasus/region_tmpl.hh"
 #include "globalheap/layout.hh"
 #include "globalheap/freespacemap.hh"
 #include "globalheap/helper.hh"

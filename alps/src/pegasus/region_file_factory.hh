@@ -24,7 +24,8 @@
 #include <string>
 #include <boost/filesystem.hpp>
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+
 #include "pegasus/fstype_factory.hh"
 
 namespace alps {

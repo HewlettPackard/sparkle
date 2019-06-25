@@ -1,0 +1,51 @@
+cluster: &CLUSTER_NAME test
+
+alps:
+  home_dir: ../..
+  build_dir: ../../build
+
+librarian:
+  server:
+    host: localhost
+    install: 
+      prefix: /var/tmp/lfs
+      modules:
+        tm_librarian: tm-librarian
+        tm_ivshmem_server: tm-ivshmem-server
+
+  clients:
+    cluster: *CLUSTER_NAME
+    install: 
+      prefix: /root/l4tm
+      modules:
+        tm_librarian: tm-librarian
+        zbridge_driver: zbridge_driver
+        tm_fuse: tm-fuse-4.3.3
+        tm_libfuse: tm-libfuse
+
+  ini_file: l4tm_book_data.ini
+
+  git_repo:
+    local:
+      /tmp/lfs-repo
+      
+    latest:
+    - https://github.hpe.com/hpelinux/tm-librarian.git
+    - https://github.hpe.com/hpelinux/tm-ivshmem-server.git
+    - https://github.hpe.com/hpelinux/zbridge_driver.git
+    - https://github.hpe.com/hpelinux/tm-fuse-4.3.3.git
+    - https://github.hpe.com/hpelinux/tm-libfuse.git:
+        branch: 'hp_l4tm'
+
+    stable:
+    - https://github.hpe.com/hpelinux/tm-librarian.git:
+        tag: '75698fdb2fe613a586b1f24d48846778800156f6'
+    - https://github.hpe.com/hpelinux/tm-ivshmem-server.git:
+        tag: 'fc58e340db7f0b680eec248e1121a2ada674e122'
+    - https://github.hpe.com/hpelinux/zbridge_driver.git:
+        tag: '157786fe0bbf529fc6145a938bdd373ff4295300'
+    - https://github.hpe.com/hpelinux/tm-fuse-4.3.3.git:
+        tag: '69936de48176c6020c3ec4bc7ee3537e65b26667'
+    - https://github.hpe.com/hpelinux/tm-libfuse.git:
+        branch: 'hp_l4tm'
+        tag: '273bb632738d798c46d4ff708fa7c54d419546f6'

@@ -23,11 +23,12 @@
 #include <mutex>
 #include <assert.h>
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
+#include "alps/pegasus/pegasus.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "common/debug.hh"
-#include "pegasus/pegasus.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
+#include "pegasus/region_file.hh"
 #include "globalheap/extentheap.hh"
 #include "globalheap/helper.hh"
 #include "globalheap/layout.hh"

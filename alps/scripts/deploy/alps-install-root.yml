@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+  - name: Generate Alps system-wide configuration file
+    template: src=alps.yml.template.j2 dest=/etc/default/alps.yml
+    with_items:
+    - lfs_book_size_bytes: '{{ lfs_book_size_bytes }}'
+      lfs_node: '{{ lfs_node }}'
+      lfs_node_count: '{{ lfs_node_count }}'

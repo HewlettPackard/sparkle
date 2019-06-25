@@ -16,8 +16,9 @@
 
 #include <assert.h>
 
-#include <boost/filesystem/path.hpp>
-#include "globalheap/globalheap.hh"
+#include "boost/filesystem/path.hpp"
+#include "alps/globalheap/globalheap.hh"
+
 
 #define HEAP_PATH "/dev/shm/nvm/root" // can be also a path to a file in /lfs
 #define HEAP_SIZE 128*1024*1024LLU // 128 MB
@@ -56,7 +57,7 @@ int main()
     GlobalHeap* heap;
 
     // Initialize PEGASUS address space 
-    Pegasus::init((const char*) NULL);
+    Pegasus::init((const char*) NULL, false, false);
 
     // Create directory containing heap
     boost::filesystem::path heap_dir = boost::filesystem::path(HEAP_PATH).parent_path();

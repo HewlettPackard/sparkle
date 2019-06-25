@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include "common/log.hh"
+#include "log.hh"
+
 #include <boost/log/core/core.hpp>
 #include <boost/log/expressions/formatters/date_time.hpp>
 #include <boost/log/expressions.hpp>
@@ -30,7 +31,8 @@
 #include <boost/shared_ptr.hpp>
 #include <fstream>
 #include <ostream>
-#include "common/debug_options.hh"
+
+#include "alps/common/debug_options.hh"
  
 namespace alps {
 
@@ -45,7 +47,7 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(thread_id, "ThreadID", boost::log::attributes::curre
  
 boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level> logger;
 
-void init_log(DebugOptions& debug_options)
+void init_log(const DebugOptions& debug_options)
 {
     // add attributes
     logger.add_attribute("LineID", attrs::counter<unsigned int>(1));     // lines are sequentially numbered

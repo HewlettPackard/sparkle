@@ -33,7 +33,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 
-#include "common/debug_options.hh"
+#include "alps/common/debug_options.hh"
  
 // just log messages with severity >= SEVERITY_THRESHOLD are written
 #define SEVERITY_THRESHOLD logging::trivial::warning
@@ -45,7 +45,7 @@ namespace alps {
 
 extern boost::log::sources::severity_logger_mt<boost::log::trivial::severity_level> logger;
 
-void init_log(DebugOptions& options);
+void init_log(const DebugOptions& options);
 
 } // namespace alps
 

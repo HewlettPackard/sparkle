@@ -16,8 +16,6 @@
 
 #include <fcntl.h>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
-#include "pegasus/region_tmpl.hh"
 #include "test_heap_fixture.hh"
 
 using namespace alps;

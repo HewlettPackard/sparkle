@@ -17,8 +17,9 @@
 #ifndef _ALPS_GLOBALHEAP_NVSLAB_HH_
 #define _ALPS_GLOBALHEAP_NVSLAB_HH_
 
-#include "common/assorted_func.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/common/assorted_func.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "globalheap/bitmap.hh"
 #include "globalheap/layout.hh"
 #include "globalheap/size_class.hh"
@@ -34,6 +35,7 @@ static size_t slab_size = 256*1024LLU;
  * @brief Variable-size slab header
  */
 struct nvSlabHeader {
+    // When adding a member field, ensure method size_of() includes that field too
     uint32_t header_size;
     uint16_t sizeclass;
     uint32_t nblocks;
@@ -65,7 +67,6 @@ struct nvSlabHeader {
         return header_size;
     }
 
-private:
     /**
      * @brief Return maximum number of blocks for a given slab size and block size
      *

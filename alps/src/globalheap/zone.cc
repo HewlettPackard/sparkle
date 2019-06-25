@@ -15,10 +15,13 @@
  */
 
 #include "globalheap/zone.hh"
+
 #include <stddef.h>
 #include <stdint.h>
+
+#include "alps/common/error_code.hh"
+
 #include "common/debug.hh"
-#include "common/error_code.hh"
 #include "globalheap/helper.hh"
 
 namespace alps {

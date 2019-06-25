@@ -16,9 +16,8 @@
 
 #include <fcntl.h>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
-#include "pegasus/address_space.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/common/error_stack.hh"
+#include "alps/pegasus/address_space.hh"
 #include "test_heap_fixture.hh"
 
 using namespace alps;
@@ -30,6 +29,11 @@ TEST_F(ExtentHeapTest, test1)
     RRegion::TPtr<void> e1 = extentheap()->malloc(28*256*1024);
     RRegion::TPtr<void> e2 = extentheap()->malloc(2*256*1024);
     RRegion::TPtr<void> e3 = extentheap()->malloc(256*1024);
+
+    EXPECT_NE(null_ptr, e1);
+    EXPECT_NE(null_ptr, e2);
+    EXPECT_NE(null_ptr, e3);
+
     extentheap()->free(e1);
     extentheap()->free(e2);
     extentheap()->free(e3);

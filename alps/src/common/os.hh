@@ -21,12 +21,13 @@
 #include <mntent.h>
 #include <sys/types.h>
 
+#include <regex>
 #include <string>
 #include <utility>
 
 #include "boost/filesystem/path.hpp"
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
 
 
 // Useful OS utility functions
@@ -75,7 +76,7 @@ std::string fs_unique_name(const std::string& model, uint64_t differentiator = 0
  * This method provides the fundamental building block of fault-tolerant systems; fsync.
  * We so far don't provide fdatasync (no metadata sync), but this should suffice.
  */
-bool        fs_fsync(const boost::filesystem::path& path, bool sync_parent_directory = false);
+bool fs_fsync(const boost::filesystem::path& path, bool sync_parent_directory = false);
 
 /**
  * @brief Renames the old file to the new file with the POSIX atomic-rename semantics.
@@ -98,7 +99,7 @@ bool        fs_fsync(const boost::filesystem::path& path, bool sync_parent_direc
  * @see Eat My Data: How Everybody Gets File IO Wrong:
  * https://www.flamingspork.com/talks/2007/06/eat_my_data.odp
  */
-bool        fs_atomic_rename(const boost::filesystem::path& old_path, const boost::filesystem::path& new_path);
+bool fs_atomic_rename(const boost::filesystem::path& old_path, const boost::filesystem::path& new_path);
 
 /**
  * @brief fsync() on source file before rename, then fsync() on the parent folder after rename.
@@ -117,7 +118,7 @@ bool        fs_atomic_rename(const boost::filesystem::path& old_path, const boos
  * Quite complex and expensive, but this is required to make it durable regardless of filesystems.
  * Fortunately, we have to call this method only once per epoch-advance.
  */
-bool        fs_durable_atomic_rename(const boost::filesystem::path& old_path, const boost::filesystem::path& new_path);
+bool fs_durable_atomic_rename(const boost::filesystem::path& old_path, const boost::filesystem::path& new_path);
 
 
 
@@ -129,16 +130,36 @@ bool        fs_durable_atomic_rename(const boost::filesystem::path& old_path, co
  * and their parents. This is required to make sure the new directory entries become durable.
  * @return whether the directory already exists or creation succeeded
  */
-bool        fs_create_directories(const boost::filesystem::path& p, bool sync = false);
+bool fs_create_directories(const boost::filesystem::path& p, bool sync = false);
+
 /**
  * mkdir.
- * @ingroup FILESYSTEM
- * @param[in] p path of the directory to create
- * @param[in] sync (optional, default false) wheter to call fsync() on the created directory
+ * \ingroup FILESYSTEM
+ * \param[in] p path of the directory to create
+ * \param[in] sync (optional, default false) wheter to call fsync() on the created directory
  * and its parent. This is required to make sure the new directory entry becomes durable.
- * @return whether the directory already exists or creation whether succeeded
+ * \return whether the directory already exists or creation whether succeeded
  */
-bool        fs_create_directory(const boost::filesystem::path& p, bool sync = false);
+bool fs_create_directory(const boost::filesystem::path& p, bool sync = false);
+
+
+/**
+ * \brief list files
+ * \ingroup FILESYSTEM
+ * \param[in] p path of the directory to list entries of
+ * \param[out] el list of directory entries
+ */
+void fs_list_entries(const boost::filesystem::path& p, std::list<boost::filesystem::path>* el);
+
+
+/**
+ * \brief Remove files in directory \a path matching regular expression \a regex. 
+ * \ingroup FILESYSTEM
+ * \param[in] p path of the directory to remove entries of
+ * \param[in] regex regular expression to match entries against 
+ * \param[in] wait_for_reclamation wait for file system to reclaim space (only valid for LFS)
+ */
+void fs_remove_matched(const boost::filesystem::path& dir, const std::regex regex, bool wait_for_reclamation, int timeout_sec = 60);
 
 
 

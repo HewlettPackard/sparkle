@@ -16,9 +16,10 @@
 
 #include "globalheap/memattrib_heap.hh"
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/extentheap.hh"
-#include "globalheap/memattrib.hh"
 #include "globalheap/process_slab_heap.hh"
 #include "globalheap/thread_slab_heap.hh"
 

@@ -16,10 +16,12 @@
 
 #include <math.h>
 #include <assert.h>
+
 #include <algorithm>
+
+#include "common/debug.hh"
 #include "globalheap/slab.hh"
 #include "globalheap/slab_heap.hh"
-#include "common/debug.hh"
 
 namespace alps {
 

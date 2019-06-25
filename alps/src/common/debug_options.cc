@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-#include "common/debug_options.hh"
+#include "alps/common/debug_options.hh"
 
 namespace alps {
 
-ErrorStack DebugOptions::load(YAML::Node* node) {
-    EXTERNALIZE_LOAD_ELEMENT(node, log_filename);
-    EXTERNALIZE_LOAD_ELEMENT(node, log_level);
+ErrorStack DebugOptions::load(YAML::Node* node, bool ignore_missing) {
+    EXTERNALIZE_LOAD_ELEMENT(node, ignore_missing, log_filename);
+    EXTERNALIZE_LOAD_ELEMENT(node, ignore_missing, log_level);
 
     return kRetOk;
 }
 
 
-ErrorStack DebugOptions::save(YAML::Emitter& out) const {
+ErrorStack DebugOptions::save(YAML::Emitter* out) const {
     return kRetOk;
 }
 

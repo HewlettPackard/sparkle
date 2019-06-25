@@ -17,6 +17,6 @@
 #ifndef _ALPS_COMMON_DEBUG_HH_
 #define _ALPS_COMMON_DEBUG_HH_
 
-#include "common/log.hh"
+#include "log.hh"
 
 #endif // _ALPS_COMMON_DEBUG_HH_

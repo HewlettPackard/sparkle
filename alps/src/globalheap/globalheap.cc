@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "globalheap/globalheap.hh"
+#include "alps/globalheap/globalheap.hh"
 
 #include <sys/stat.h>
 #include <sys/file.h>
@@ -23,14 +23,13 @@
 #include <mutex>
 #include <assert.h>
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
+#include "alps/pegasus/pegasus.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
 #include "common/debug.hh"
-#include "pegasus/pegasus.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
 #include "globalheap/extentheap.hh"
 #include "globalheap/layout.hh"
-
 #include "globalheap/globalheap_internal.hh"
 
 

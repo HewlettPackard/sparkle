@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "common/externalizable.hh"
+#include "alps/common/externalizable.hh"
 
 #include <cstring>
 #include <fstream>
@@ -25,15 +25,17 @@
 #include <vector>
 #include <exception>
 
-#include "common/assorted_func.hh"
+#include "yaml-cpp/yaml.h"
+#include "alps/common/assorted_func.hh"
+
 #include "common/os.hh"
 
 namespace alps {
 
-ErrorStack Externalizable::load_from_string(const std::string& yaml) {
+ErrorStack Externalizable::load_from_string(const std::string& yaml, bool ignore_missing) {
     try {
         YAML::Node node = YAML::Load(yaml);
-        CHECK_ERROR(load(&node));
+        CHECK_ERROR(load(&node, ignore_missing));
     } catch (std::exception& e) {
         std::stringstream custom_message;
         custom_message << "problematic yaml=" << yaml;
@@ -46,7 +48,7 @@ void Externalizable::save_to_stream(std::ostream* ptr) const {
     std::ostream &o = *ptr;
     YAML::Emitter out;
     out << YAML::BeginMap;
-    ErrorStack error_stack = save(out);
+    ErrorStack error_stack = save(&out);
     out << YAML::EndMap;
     if (error_stack.is_error()) {
         o << "Failed during Externalizable::save_to_stream(): " << error_stack;
@@ -55,14 +57,14 @@ void Externalizable::save_to_stream(std::ostream* ptr) const {
     o << out.c_str();
 }
 
-ErrorStack Externalizable::load_from_file(const fs::path& path) {
+ErrorStack Externalizable::load_from_file(const fs::path& path, bool ignore_missing) {
     if (!fs::exists(path)) {
         return ERROR_STACK_MSG(kErrorCodeConfFileNotFound, path.c_str());
     }
 
     try {
         YAML::Node node = YAML::LoadFile(path.c_str());
-        CHECK_ERROR(load(&node));
+        CHECK_ERROR(load(&node, ignore_missing));
     } catch (std::exception& e) {
         std::stringstream custom_message;
         custom_message << "problematic file=" << path;
@@ -75,7 +77,7 @@ ErrorStack Externalizable::save_to_file(const fs::path& path) const {
     // construct the YAML in memory
     YAML::Emitter out;
     out << YAML::BeginMap;
-    ErrorStack error_stack = save(out);
+    ErrorStack error_stack = save(&out);
     out << YAML::EndMap;
     if (error_stack.is_error()) {
         std::stringstream custom_message;
@@ -136,13 +138,12 @@ ErrorStack Externalizable::load_from_command_options(int argc, char* argv[])
             (*it)->add_option(desc);
         }
 
-        po::positional_options_description positionalOptions; 
         po::variables_map vm; 
 
         try 
         { 
             po::parsed_options parsed = po::command_line_parser(argc, argv).options(desc) 
-                                  .positional(positionalOptions).allow_unregistered().run(); 
+                                  .allow_unregistered().run(); 
             po::store(parsed, vm);
 
             if (vm.count("help")) { 
@@ -179,33 +180,38 @@ ErrorStack Externalizable::load_from_command_options(int argc, char* argv[])
     return kRetOk;
 }
 
-ErrorStack insert_comment_impl(YAML::Emitter& out, const std::string& comment) {
+
+ErrorStack insert_comment_impl(YAML::Emitter* out, const std::string& comment) {
     if (comment.size() > 0) {
-        out << YAML::Comment(comment);
+        (*out) << YAML::Comment(comment);
     }
     return kRetOk;
 }
-ErrorStack Externalizable::insert_comment(YAML::Emitter& out,
+
+
+ErrorStack Externalizable::insert_comment(YAML::Emitter* out,
                       const std::string& comment) 
 {
     return insert_comment_impl(out, comment);
 }
-ErrorStack Externalizable::append_comment(YAML::Emitter& out,
+
+
+ErrorStack Externalizable::append_comment(YAML::Emitter* out,
                       const std::string& comment) 
 {
     if (comment.size() > 0) {
-        out << YAML::Comment(comment);
+        (*out) << YAML::Comment(comment);
     }
     return kRetOk;
 }
 
 
 template <typename T>
-ErrorStack Externalizable::add_element(YAML::Emitter& out,
+ErrorStack Externalizable::add_element(YAML::Emitter* out,
                 const std::string& tag, const std::string& comment, T value, bool seq) 
 {
-    out << YAML::Key << tag;
-    out << YAML::Value << value;
+    (*out) << YAML::Key << tag;
+    (*out) << YAML::Value << value;
     if (comment.size() > 0) {
         CHECK_ERROR(insert_comment_impl(out,
             tag + " (type=" + get_pretty_type_name<T>() + "): " + comment));
@@ -217,9 +223,34 @@ ErrorStack Externalizable::add_element(YAML::Emitter& out,
 // Explicit instantiations for each type
 // @cond DOXYGEN_IGNORE
 #define EXPLICIT_INSTANTIATION_ADD(x) template ErrorStack Externalizable::add_element< x > \
-  (YAML::Emitter& emitter, const std::string& tag, const std::string& comment, x value, bool seq)
+  (YAML::Emitter* emitter, const std::string& tag, const std::string& comment, x value, bool seq)
 INSTANTIATE_ALL_TYPES(EXPLICIT_INSTANTIATION_ADD);
 // @endcond
+
+
+template <typename T>
+ErrorStack Externalizable::add_element(YAML::Emitter* out, const std::string& tag,
+        const std::string& comment, const std::vector< T >& value, bool seq) 
+{
+    *out << YAML::Key << tag;
+    if (comment.size() > 0) {
+      CHECK_ERROR(append_comment(out,
+        tag + " (type=" + get_pretty_type_name< std::vector< T > >()
+          + "): " + comment));
+    }
+    *out << YAML::Value << value;
+    return kRetOk;
+}
+
+// Explicit instantiations for each type
+// @cond DOXYGEN_IGNORE
+#define EXPLICIT_INSTANTIATION_ADD_VECTOR(x) template ErrorStack Externalizable::add_element< x > \
+  (YAML::Emitter* emitter, const std::string& tag, const std::string& comment, const std::vector<x>& value, bool seq)
+INSTANTIATE_ALL_TYPES(EXPLICIT_INSTANTIATION_ADD_VECTOR);
+// @endcond
+
+
+
 
 #if 0
 ErrorStack Externalizable::add_child_element(tinyxml2::XMLElement* parent, const std::string& tag,
@@ -236,7 +267,7 @@ ErrorStack Externalizable::add_child_element(tinyxml2::XMLElement* parent, const
 
 template <typename T>
 ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& tag,
-                      T* out, bool optional, T default_value) 
+                      T* out, bool ignore_missing, bool optional, T default_value) 
 {
     if ((*parent)[tag]) {
         *out = (*parent)[tag].as<T>();
@@ -245,24 +276,27 @@ ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& ta
         *out = default_value;
         return kRetOk;
     }
+    if (ignore_missing) {
+        return kRetOk;
+    }
     return ERROR_STACK_MSG(kErrorCodeConfMissingElement, tag.c_str());
 }
 
 // Explicit instantiations for each type
 // @cond DOXYGEN_IGNORE
 #define EXPLICIT_INSTANTIATION_GET(x) template ErrorStack Externalizable::get_element< x > \
-  (YAML::Node* parent, const std::string& tag, x * out, bool optional, x default_value)
+  (YAML::Node* parent, const std::string& tag, x * out, bool ignore_missing, bool optional, x default_value)
 INSTANTIATE_ALL_TYPES(EXPLICIT_INSTANTIATION_GET);
 // @endcond
 
 ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& tag,
-                  std::string* out, bool optional, const char* default_value) {
-    return get_element<std::string>(parent, tag, out, optional, std::string(default_value));
+                  std::string* out, bool ignore_missing, bool optional, const char* default_value) {
+    return get_element<std::string>(parent, tag, out, ignore_missing, optional, std::string(default_value));
 }
 
 template <typename T>
 ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& tag,
-                      std::vector<T> * out, bool optional) 
+                      std::vector<T> * out, bool ignore_missing, bool optional) 
 {
   out->clear();
   if ((*parent)[tag]) {
@@ -272,7 +306,7 @@ ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& ta
       out->push_back(tmp);
     }
   }
-  if (out->size() == 0 && !optional) {
+  if (out->size() == 0 && !optional && !ignore_missing) {
     return ERROR_STACK_MSG(kErrorCodeConfMissingElement, tag.c_str());
   }
   return kRetOk;
@@ -281,12 +315,12 @@ ErrorStack Externalizable::get_element(YAML::Node* parent, const std::string& ta
 // Explicit instantiations for each type
 // @cond DOXYGEN_IGNORE
 #define EXPLICIT_INSTANTIATION_GET_VECTOR(x) template ErrorStack Externalizable::get_element< x > \
-  (YAML::Node* parent, const std::string& tag, std::vector< x > * out, bool optional)
+  (YAML::Node* parent, const std::string& tag, std::vector< x > * out, bool ignore_missing, bool optional)
 INSTANTIATE_ALL_TYPES(EXPLICIT_INSTANTIATION_GET_VECTOR);
 // @endcond
 
 ErrorStack Externalizable::get_child_element(YAML::Node* parent, const std::string& tag,
-                     Externalizable* child, bool optional) 
+                     Externalizable* child, bool ignore_missing, bool optional) 
 {
   YAML::Node element = (*parent)[tag];
   if (element) {
@@ -294,7 +328,11 @@ ErrorStack Externalizable::get_child_element(YAML::Node* parent, const std::stri
   } else {
     if (optional) {
       return kRetOk;
-    } else {
+    } 
+    else if (ignore_missing) {
+      return kRetOk;
+    }  
+    else {
       return ERROR_STACK_MSG(kErrorCodeConfMissingElement, tag.c_str());
     }
   }

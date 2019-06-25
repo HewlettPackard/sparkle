@@ -16,11 +16,10 @@
 
 #include <fcntl.h>
 #include <sstream>
+
 #include "gtest/gtest.h"
-#include "common/assert_nd.hh"
-#include "common/assorted_func.hh"
-#include "common/error_stack.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/common/assorted_func.hh"
+
 #include "globalheap/nvslab.hh"
 #include "globalheap/slab.hh"
 #include "globalheap/slab_heap.hh"
@@ -63,13 +62,41 @@ TEST_F(SlabTest, nvslab)
     EXPECT_EQ(nvslab->nblocks()-1, nvslab->block_id(nvslab->block(nvslab->nblocks()-1)));
 }
 
-TEST_F(SlabTest, nvslab_alloc_block)
+TEST_F(SlabTest, nvslab_alloc_block_130)
+{
+    char pattern[1024];
+    memset(pattern, 0x0, 1024);
+
+    RRegion::TPtr<nvSlab> nvslab = alloc(256*1024);
+
+    int szcl = sizeclass(130);   
+    int blksz = size_from_class(szcl);
+
+    nvSlab::make(nvslab, szcl);
+
+    // allocate block 0 and write pattern
+    RRegion::TPtr<char> blk0 = nvslab->block(0);
+    EXPECT_EQ(1, nvslab->is_free(0)); 
+    memcpy(blk0.get(), pattern, blksz);
+    nvslab->set_alloc(0);
+    EXPECT_EQ(0, memcmp(blk0.get(), pattern, blksz));
+    EXPECT_EQ(0, nvslab->is_free(0));
+
+    // allocate max block
+    int max_block_id = nvSlabHeader::max_nblocks(256*1024, blksz) - 1;
+    EXPECT_EQ(1, nvslab->is_free(max_block_id)); 
+    nvslab->set_alloc(max_block_id);
+    EXPECT_EQ(0, memcmp(blk0.get(), pattern, blksz));
+    EXPECT_EQ(0, nvslab->is_free(max_block_id)); 
+}
+
+TEST_F(SlabTest, nvslab_alloc_block_1K)
 {
     RRegion::TPtr<nvSlab> nvslab = alloc(256*1024);
 
-    int szcl_1K = sizeclass(1024);   
+    int szcl = sizeclass(1024);   
 
-    nvSlab::make(nvslab, szcl_1K);
+    nvSlab::make(nvslab, szcl);
 
     EXPECT_EQ(1, nvslab->is_free(0)); 
     nvslab->set_alloc(0);
@@ -80,6 +107,9 @@ TEST_F(SlabTest, nvslab_alloc_block)
     nvslab->set_alloc(1);
     EXPECT_EQ(0, nvslab->is_free(1)); 
 }
+
+
+
 
 TEST_F(SlabTest, load_nvslab)
 {

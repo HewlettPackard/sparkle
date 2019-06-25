@@ -17,7 +17,9 @@
 #ifndef _ALPS_PEGASUS_LFS_TOPOLOGY_HH_
 #define _ALPS_PEGASUS_LFS_TOPOLOGY_HH_
 
-#include "pegasus/pegasus_options.hh"
+#include "alps/pegasus/pegasus_options.hh"
+#include "alps/pegasus/lfs_options.hh"
+
 #include "pegasus/topology.hh"
 
 namespace alps {
@@ -33,12 +35,17 @@ public:
     ~LfsTopology();
 
 private:
+    void update();
     unsigned int node_running_on();
 
 private:
-    bool last_is_valid_;
+    LfsOptions   lfs_options_;
+    bool         is_stale_;
+    unsigned int node_count_;
+    unsigned int max_node_;
     unsigned int last_node_;
 };
+
 
 class FRDNode 
 {
@@ -90,8 +97,6 @@ private:
     unsigned int encl_;
     unsigned int node_;
 };
-
-
 
 
 } // namespace alps

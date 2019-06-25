@@ -19,11 +19,12 @@
 
 #include <vector>
 
-#include "common/error_code.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/relocatable_region.hh"
+#include "alps/globalheap/memattrib.hh"
+
 #include "globalheap/layout.hh"
 #include "globalheap/lease.hh"
-#include "globalheap/memattrib.hh"
 
 namespace alps {
 

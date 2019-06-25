@@ -16,8 +16,7 @@
 
 #include <stdlib.h>
 #include "gtest/gtest.h"
-#include "common/error_code.hh"
-#include "pegasus/pegasus_options.hh"
+#include "alps/pegasus/pegasus_options.hh"
 #include "test_common.hh"
 
 using namespace alps;
@@ -47,7 +46,7 @@ TEST_F(RegionFileTest, setxattr)
 
     EXPECT_NE((RegionFile*) 0, f = TmpfsRegionFile::construct(test_path("fsetxattr").c_str(), pegasus_options));
     EXPECT_EQ(kErrorCodeOk, f->create(S_IRUSR | S_IWUSR));
-    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.interleave_request", interleave_request, sizeof(interleave_request), 0));
+    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.LFS.InterleaveRequest", interleave_request, sizeof(interleave_request), 0));
 }
 
 TEST_F(RegionFileTest, getxattr)
@@ -58,8 +57,8 @@ TEST_F(RegionFileTest, getxattr)
 
     EXPECT_NE((RegionFile*) 0, f = TmpfsRegionFile::construct(test_path("fsetxattr").c_str(), pegasus_options));
     EXPECT_EQ(kErrorCodeOk, f->create(S_IRUSR | S_IWUSR));
-    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.interleave_request", interleave_request, sizeof(interleave_request), 0));
-    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.interleave_request", buf, sizeof(interleave_request)));
+    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.LFS.InterleaveRequest", interleave_request, sizeof(interleave_request), 0));
+    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.LFS.InterleaveRequest", buf, sizeof(interleave_request)));
     for (size_t i=0; i < sizeof(interleave_request); i++) {
         EXPECT_EQ(interleave_request[i], buf[i]);
     }
@@ -86,7 +85,7 @@ TEST_F(RegionFileTest, creat_truncate1)
     EXPECT_EQ(kErrorCodeOk, f->create(S_IRUSR | S_IWUSR));
     EXPECT_EQ(kErrorCodeOk, f->truncate(test_file_size));
 
-    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.interleave", buf, sizeof(expected_interleave)));
+    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.LFS.Interleave", buf, sizeof(expected_interleave)));
     for (size_t i=0; i < sizeof(expected_interleave); i++) {
         EXPECT_EQ(expected_interleave[i], buf[i]);
     }
@@ -102,10 +101,10 @@ TEST_F(RegionFileTest, creat_truncate2)
 
     EXPECT_NE((RegionFile*) 0, f = TmpfsRegionFile::construct(test_path("fsetxattr_noattr").c_str(), pegasus_options));
     EXPECT_EQ(kErrorCodeOk, f->create(S_IRUSR | S_IWUSR));
-    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.interleave_request", interleave_request, sizeof(interleave_request), 0));
+    EXPECT_EQ(kErrorCodeOk, f->setxattr("user.LFS.InterleaveRequest", interleave_request, sizeof(interleave_request), 0));
     EXPECT_EQ(kErrorCodeOk, f->truncate(test_file_size));
 
-    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.interleave", buf, sizeof(expected_interleave)));
+    EXPECT_EQ(kErrorCodeOk, f->getxattr("user.LFS.Interleave", buf, sizeof(expected_interleave)));
     for (size_t i=0; i < sizeof(expected_interleave); i++) {
         EXPECT_EQ(expected_interleave[i], buf[i]);
     }

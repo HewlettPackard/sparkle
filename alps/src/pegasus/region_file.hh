@@ -20,11 +20,13 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+
 #include <map>
 #include <vector>
 #include <string>
-#include "common/error_code.hh"
-#include "pegasus/interleave_group.hh"
+
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/interleave_group.hh"
 
 namespace alps {
 

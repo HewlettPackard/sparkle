@@ -17,7 +17,6 @@
 #include <fcntl.h>
 #include <sstream>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
 #include "globalheap/extentheap.hh"
 #include "globalheap/extentmap.hh"
 #include "test_common.hh"

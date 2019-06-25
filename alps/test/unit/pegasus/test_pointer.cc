@@ -16,10 +16,8 @@
 
 #include <stdlib.h>
 #include "gtest/gtest.h"
-#include "common/assert_nd.hh"
-#include "pegasus/pegasus.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
+#include "alps/pegasus/pegasus.hh"
+#include "alps/pegasus/pointer.hh"
 #include "test_common.hh"
 
 using namespace alps;

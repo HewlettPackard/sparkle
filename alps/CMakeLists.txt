@@ -14,14 +14,13 @@
 # limitations under the License.
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0.2)
 project(alps)
 set(ALPS_PROJECT_VERSION 0.1.0)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(HOLODECK_DIR /scratch/workspace/holodeck) 
-
+include(FeatureSummary)
 include(cmake/internal_utils.cmake)
 
 # compiler flags for all build types
@@ -53,6 +52,16 @@ if(NOT TARGET_ARCH_MEM)
 endif()
 set_arch_conf(${TARGET_ARCH_MEM} ARCH_LIBS ARCH_DEFS)
 
+# check for dependencies 
+find_package(Boost 1.36.0 REQUIRED COMPONENTS serialization log system program_options filesystem thread)
+find_package(Numa REQUIRED)
+find_package(XATTR REQUIRED)
+
+# check for target architecture dependencies
+if(${TARGET_ARCH_MEM} MATCHES "NV-NCC-FAM")
+	find_package(FamAtomic REQUIRED)
+endif()
+
 set(TARGETS)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
@@ -75,7 +84,12 @@ add_subdirectory(examples)
 enable_testing()
 add_subdirectory(test)
 
-# packaging
+###############################################################################
+#
+#                           Install headers/libraries
+#
+###############################################################################
+
 set(CPACK_PACKAGE_VERSION ${ALPS_PROJECT_VERSION})
 set(CPACK_GENERATOR "TGZ")
 set(CPACK_PACKAGE_NAME "alps")
@@ -86,3 +100,5 @@ set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}.${CMAKE_SYSTEM_PROCESSOR}")
 set(CPACK_COMPONENTS_ALL unspecified tests)
 include(CPack)
+
+feature_summary(FATAL_ON_MISSING_REQUIRED_PACKAGES WHAT ALL)

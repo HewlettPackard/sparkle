@@ -17,7 +17,7 @@
 #include <fcntl.h>
 #include <sstream>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
+#include "alps/common/error_stack.hh"
 #include "globalheap/extentheap.hh"
 
 using namespace alps;

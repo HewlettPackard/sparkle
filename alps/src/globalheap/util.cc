@@ -21,8 +21,9 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
-#include "common/assorted_func.hh"
-#include "pegasus/pegasus.hh"
+#include "alps/common/assorted_func.hh"
+#include "alps/pegasus/pegasus.hh"
+
 #include "globalheap/globalheap_internal.hh"
 #include "globalheap/layout.hh"
 #include "globalheap/nvslab.hh"
@@ -541,7 +542,8 @@ int main(int argc, char** argv)
         int ret;
         desc.add_options() 
             ("help", "Print help messages") 
-            ("loglevel", po::value<std::string>()->default_value("warning"), "Log messages at or above this level: INFO, WARNING, ERROR, and FATAL")
+            ("config", po::value<std::string>(), "File to load Alps/Pegasus configuration options from") 
+            ("log_level", po::value<std::string>()->default_value("warning"), "Log messages at or above this level: INFO, WARNING, ERROR, and FATAL")
             ("command", po::value<std::string>()->required(), "Command to execute: [create, format, report]")
             ("heappath", po::value<std::string>(), "Heap path")
             ("subargs", po::value<std::vector<std::string> >(), "Arguments for command");
@@ -564,14 +566,23 @@ int main(int argc, char** argv)
  
             po::notify(vm); // throws on error, so do after help in case 
                             // there are any problems 
-                      
-            std::string cmd = vm["command"].as<std::string>();
-            std::string loglevel = vm["loglevel"].as<std::string>();
-            std::transform(loglevel.begin(), loglevel.end(), loglevel.begin(), ::tolower);
+             
 
+            std::string cmd = vm["command"].as<std::string>();
+
+            // Initialize Pegasus
             PegasusOptions pgopt;
-            pgopt.debug_options.log_level = loglevel;
-            Pegasus::init(&pgopt);
+            const char* config_file = NULL;
+            if (vm.count("config")) {
+                config_file = vm["config"].as<std::string>().c_str();
+            } 
+            Pegasus::load_options(config_file, true, true, &pgopt);
+            if (vm.count("log_level")) {
+                std::string log_level = vm["log_level"].as<std::string>();
+                std::transform(log_level.begin(), log_level.end(), log_level.begin(), ::tolower);
+                pgopt.debug_options.log_level = log_level;
+            }
+            Pegasus::init(pgopt);
 
             if (cmd == "create") {
                 ret = cmd_create(progname, parsed, vm);

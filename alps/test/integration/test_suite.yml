@@ -1,0 +1,4 @@
+jobs:
+- test_atomic
+#- test_pegas
+#- test_pointer

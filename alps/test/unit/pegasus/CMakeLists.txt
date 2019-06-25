@@ -15,14 +15,17 @@
 #
 
 function (add_pegasus_test targetname)
-  add_alps_test2(${targetname} ${targetname} ${targetname})
+  add_alps_test(${targetname})
 endfunction()
 
-##add_alps_test(test_options)
+function (add_pegasus_test_tmpfs_only targetname)
+  add_alps_test_tmpfs_only(${targetname})
+endfunction()
+
 ##add_alps_test(test_inverted_table)
 add_pegasus_test(test_multi_region_file)
 add_pegasus_test(test_pegas)
 add_pegasus_test(test_pointer)
 add_pegasus_test(test_region_file)
-add_pegasus_test(test_tmpfs_region_file)
+add_pegasus_test_tmpfs_only(test_tmpfs_region_file)
 add_pegasus_test(test_topology)

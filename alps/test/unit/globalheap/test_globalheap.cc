@@ -15,10 +15,11 @@
  */
 
 #include <fcntl.h>
+
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
+#include "alps/globalheap/globalheap.hh"
+
 #include "common/os.hh"
-#include "globalheap/globalheap.hh"
 #include "globalheap/globalheap_internal.hh"
 #include "test_heap_fixture.hh"
 
@@ -76,7 +77,13 @@ TEST_F(GlobalHeapTest, check_mapping)
     ASSERT_EQ(0, heap->close());
 }
 
-TEST_F(GlobalHeapTest, check_interleaving)
+
+// This test will fail if interleaving of books is not precise, meaning
+// allocation of books to interleave groups does not happen precisely as
+// requested. The precise allocation pattern is: 
+//   0x000000...00 010101...01 .. 0N0N0N...ON 
+// where N is the number of max inteleave group.
+TEST_F(GlobalHeapTest, check_precise_interleaving)
 {
     GlobalHeapInternal* heap;  
     Topology*           topology;
@@ -209,10 +216,17 @@ TEST_F(AutoGlobalHeapTest, memattrib_alloc)
     MemAttrib ma0(0);
     MemAttrib ma1(1);
 
-    RRegion::TPtr<void> p1 = heap_->malloc(1024, ma1);
-    RRegion::TPtr<void> p2 = heap_->malloc(2048, ma0);
-    EXPECT_NE(null_ptr, p1);
-    EXPECT_NE(null_ptr, p2);
+    Topology* topology;
+    ASSERT_EQ(kErrorCodeOk, Pegasus::topology_factory()->construct(test_path("dummy"), &topology));
+    size_t num_avail_igs = topology->max_interleave_group() + 1;
+
+    // only run if we are running on a machine with enough interleave groups
+    if (num_avail_igs > 1) { 
+            RRegion::TPtr<void> p1 = heap_->malloc(1024, ma1);
+            RRegion::TPtr<void> p2 = heap_->malloc(2048, ma0);
+            EXPECT_NE(null_ptr, p1);
+            EXPECT_NE(null_ptr, p2);
+    }
 }
 
 TEST_F(AutoGlobalHeapTest, memattrib_alloc_free)
@@ -220,13 +234,20 @@ TEST_F(AutoGlobalHeapTest, memattrib_alloc_free)
     MemAttrib ma0(0);
     MemAttrib ma1(1);
 
-    RRegion::TPtr<void> p1 = heap_->malloc(1024, ma1);
-    RRegion::TPtr<void> p2 = heap_->malloc(2048, ma0);
-    EXPECT_NE(null_ptr, p1);
-    EXPECT_NE(null_ptr, p2);
+    Topology* topology;
+    ASSERT_EQ(kErrorCodeOk, Pegasus::topology_factory()->construct(test_path("dummy"), &topology));
+    size_t num_avail_igs = topology->max_interleave_group() + 1;
 
-    heap_->free(p1);
-    heap_->free(p2);
+    // only run if we are running on a machine with enough interleave groups
+    if (num_avail_igs > 1) { 
+        RRegion::TPtr<void> p1 = heap_->malloc(1024, ma1);
+        RRegion::TPtr<void> p2 = heap_->malloc(2048, ma0);
+        EXPECT_NE(null_ptr, p1);
+        EXPECT_NE(null_ptr, p2);
+
+        heap_->free(p1);
+        heap_->free(p2);
+    }
 }
 
 TEST_F(AutoGlobalHeapTest, root)

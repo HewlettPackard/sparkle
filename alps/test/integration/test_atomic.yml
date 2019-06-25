@@ -1,0 +1,10 @@
+tasks:
+- pexec:
+    client.0:
+      - "{alps_install_dir}/bin/test-util cleanup --test_dir=/lfs"
+      - "{alps_test_dir}/test_atomic --use_environ=on --test_dir=/lfs -r {role} AtomicTestPrepare.prepare"
+- pexec:
+    client.0:
+      - "{alps_test_dir}/test_atomic --use_environ=on --test_dir=/lfs -r {role} t0:AtomicTest.producer"
+    client.1:
+      - "{alps_test_dir}/test_atomic --use_environ=on --test_dir=/lfs -r {role} t0:AtomicTest.consumer"

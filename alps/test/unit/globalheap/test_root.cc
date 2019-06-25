@@ -16,10 +16,10 @@
 
 #include <assert.h>
 #include <fcntl.h>
-#include "gtest/gtest.h"
 
-#include "common/error_stack.hh"
-#include "globalheap/globalheap.hh"
+#include "gtest/gtest.h"
+#include "alps/globalheap/globalheap.hh"
+
 #include "globalheap/globalheap_internal.hh"
 #include "test_heap_fixture.hh"
 

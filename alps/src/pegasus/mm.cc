@@ -15,8 +15,10 @@
  */
 
 #include "pegasus/mm.hh"
-#include "common/error_code.hh"
-#include "pegasus/region.hh"
+
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/region.hh"
+
 #include "pegasus/region_file.hh"
 #include "pegasus/vmarea.hh"
 

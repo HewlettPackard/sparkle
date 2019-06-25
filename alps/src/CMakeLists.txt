@@ -16,6 +16,9 @@
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/third-party/gtest/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${NUMA_INCLUDE_DIR})
+include_directories(${XATTR_INCLUDE_DIR})
 
 add_definitions(-DHAVE_BOOST_FILESYSTEM)
 add_definitions(${ARCH_DEFS})
@@ -35,10 +38,21 @@ add_subdirectory(globalheap)
 get_property(TMP_ALL_ALPS_SRC GLOBAL PROPERTY ALL_ALPS_SRC)
 add_library(alps SHARED ${TMP_ALL_ALPS_SRC})
 
-target_link_libraries(alps numa backtrace boost_serialization boost_log boost_system boost_program_options yaml-cpp)
+target_link_libraries(alps
+	${NUMA_LIBRARY}
+	${XATTR_LIBRARY}
+	${Boost_SERIALIZATION_LIBRARY}
+	${Boost_LOG_LIBRARY}
+	${Boost_SYSTEM_LIBRARY}
+	${Boost_PROGRAM_OPTIONS_LIBRARY}
+	${Boost_FILESYSTEM_LIBRARY}
+	${Boost_SERIALIZATION_LIBRARY}
+	backtrace
+	yaml-cpp
+)
 target_link_libraries(alps ${ARCH_LIBS})
  
 list (APPEND TARGETS alps)
 
-set (LIBRARY_INSTALL_DIR lib)
-install (TARGETS ${TARGETS} DESTINATION ${LIBRARY_INSTALL_DIR})
+install (TARGETS ${TARGETS} DESTINATION lib)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/alps" DESTINATION include)

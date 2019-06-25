@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - name: Install libboost-all-dev
+    apt: pkg=libboost-all-dev state=installed update_cache=true
+  - name: Install libnuma-dev 
+    apt: pkg=libnuma-dev state=installed update_cache=true

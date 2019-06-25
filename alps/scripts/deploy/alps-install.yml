@@ -1,0 +1,25 @@
+---
+- hosts: all
+  vars:
+    envvars: 
+      - { name: 'ALPS_CONF',  val: "/home/{{ ansible_ssh_user }}/testalps/alps.yml"}
+      - { name: 'LD_LIBRARY_PATH', val: "$LD_LIBRARY_PATH:/usr/local/lib:/home/{{ ansible_ssh_user }}/testalps/lib"}
+  tasks:
+    - name: Create Alps test directory
+      file: path=~/testalps state=directory
+    - name: Copy Alps configuration file
+      copy: src=../../alps.yml dest=~/testalps
+    - name: Unconfigure environment variables
+      lineinfile: 
+        dest: "~/.bashrc"
+        state: "absent"
+        insertbefore: "^# If not running interactively, don't do anything"
+        regexp: "^export {{ item.name }}=.*"
+      with_items: envvars
+    - name: Configure environment variables
+      lineinfile: 
+        dest: "~/.bashrc"
+        state: "present"
+        insertbefore: "^# If not running interactively, don't do anything"
+        line: "export {{ item.name }}={{ item.val }}"
+      with_items: envvars

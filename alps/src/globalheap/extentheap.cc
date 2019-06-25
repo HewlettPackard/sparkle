@@ -15,8 +15,10 @@
  */
 
 #include "globalheap/extentheap.hh"
+
+#include "alps/common/error_code.hh"
+
 #include "common/debug.hh"
-#include "common/error_code.hh"
 #include "globalheap/freespacemap.hh"
 #include "globalheap/zone.hh"
 #include "globalheap/zone_heap.hh"

@@ -15,12 +15,16 @@
  */
 
 #include "extentmap.hh"
+
 #include <stddef.h>
 #include <stdint.h>
+
 #include <map>
-#include "extent.hh"
+
+#include "alps/common/error_code.hh"
+
 #include "common/debug.hh"
-#include "common/error_code.hh"
+#include "extent.hh"
 
 namespace alps {
 

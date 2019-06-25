@@ -28,8 +28,8 @@ namespace alps {
 
 class GlobalHeapTest: public RegionFileTest { 
 public:
-    size_t global_heap_size = 16*1024*1024LLU;
-    size_t global_metazone_size = 8*1024*1024LLU;
+    size_t global_heap_size = 2 * booksize();
+    size_t global_metazone_size = booksize();
 
     void SetUp() {
         RegionFileTest::SetUp();
@@ -46,7 +46,6 @@ public:
 class AutoGlobalHeapTest: public GlobalHeapTest {
 public:
     void SetUp() {
-        //RegionFileTest::SetUp();
         GlobalHeapTest::SetUp();
         EXPECT_EQ(0, GlobalHeapInternal::create(test_path("globalheap0").c_str(), global_heap_size, global_metazone_size, &heap_));
         ASSERT_EQ(0, heap_->close());
@@ -64,8 +63,8 @@ protected:
 
 class HeapTest: public RegionFileTest {
 public:
-    size_t global_heap_size = 16*1024*1024LLU;
-    size_t global_metazone_size = 8*1024*1024LLU;
+    size_t global_heap_size = 2 * booksize();
+    size_t global_metazone_size = booksize();
 
 public:
     void SetUp() {

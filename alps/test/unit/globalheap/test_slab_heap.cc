@@ -16,11 +16,10 @@
 
 #include <fcntl.h>
 #include <sstream>
+
 #include "gtest/gtest.h"
-#include "common/assert_nd.hh"
-#include "common/assorted_func.hh"
-#include "common/error_stack.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/common/assorted_func.hh"
+
 #include "globalheap/nvslab.hh"
 #include "globalheap/slab_heap.hh"
 #include "test_common.hh"

@@ -19,7 +19,9 @@
 
 #include <string>
 #include <boost/filesystem.hpp>
-#include "pegasus/pegasus_options.hh"
+
+#include "alps/pegasus/pegasus_options.hh"
+
 #include "pegasus/region_file.hh"
 
 namespace alps {
@@ -40,7 +42,7 @@ public:
                   const PegasusOptions& pegasus_options)
         : pathname_(pathname),
           fd_(-1),
-          booksize_(pegasus_options.lfs_options.booksize)
+          booksize_(pegasus_options.lfs_options.book_size_bytes)
     { }
 
     ~LfsRegionFile() {};  

@@ -20,7 +20,8 @@
 
 #include <iostream>
 
-#include "common/assorted_func.hh"
+#include "alps/common/assorted_func.hh"
+
 #include "common/os.hh"
 #include "pegasus/tmpfs_topology.hh"
 
@@ -31,32 +32,54 @@ Topology* TmpfsTopology::construct(const boost::filesystem::path& pathname, cons
     return new TmpfsTopology(pathname, pegasus_options);
 }
 
+
 TmpfsTopology::TmpfsTopology(const boost::filesystem::path& pathname, const PegasusOptions& pegasus_options)
-    : last_node_is_valid_(false)
+    : is_stale_(true)
 {
-    // initialize node running on 
-    node_running_on();
+    // initialize topology information
+    update();
 }
 
-InterleaveGroup TmpfsTopology::max_interleave_group()
-{
-    return numa_max_node();
-}
 
-unsigned int TmpfsTopology::node_running_on()
+void TmpfsTopology::update()
 {
-    if (last_node_is_valid_) {
-        return last_node_;
-    }
-
+    // Node running on
     unsigned int cpu;
     unsigned int node;
 
     ASSERT_ND(syscall(SYS_getcpu, &cpu, &node, NULL) == 0);
     last_node_ = node;
-    last_node_is_valid_ = true;
+
+    // Max interleave group
+    max_node_ = numa_max_node();
+
+    is_stale_ = false;
+}
+
+
+InterleaveGroup TmpfsTopology::max_interleave_group()
+{
+    if (is_stale_) {
+        update();
+    }
+    return max_node_;
+}
+
+
+unsigned int TmpfsTopology::node_running_on()
+{
+    if (is_stale_) {
+        update();
+    }
     return last_node_;
 }
+
+
+InterleaveGroup TmpfsTopology::nearest_ig()
+{
+    return node_running_on();
+}
+
 
 int TmpfsTopology::run_on_node(int node)
 {
@@ -64,14 +87,10 @@ int TmpfsTopology::run_on_node(int node)
     if ((ret = numa_run_on_node(node)) < 0) {
         return ret;
     }
-    last_node_is_valid_ = false;
+    is_stale_ = true;
     return 0;
 }
 
-InterleaveGroup TmpfsTopology::nearest_ig()
-{
-    return node_running_on();
-}
 
 TmpfsTopology::~TmpfsTopology()
 {

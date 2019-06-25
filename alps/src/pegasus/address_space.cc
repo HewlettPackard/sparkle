@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-#include "pegasus/address_space.hh"
-#include "common/error_code.hh"
-#include "common/log.hh"
-#include "pegasus/address_space_options.hh"
+#include "alps/pegasus/address_space.hh"
+
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/address_space_options.hh"
+#include "alps/pegasus/mappable.hh"
+#include "alps/pegasus/relocatable_region.hh"
+
+#include "common/debug.hh"
 #include "pegasus/lfs_region_file.hh"
 #include "pegasus/mm.hh"
 #include "pegasus/region_file.hh"
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pegasus_options.hh"
 #include "pegasus/tmpfs_region_file.hh"
 
 
@@ -31,7 +33,7 @@ namespace alps {
 
 AddressSpace* __pegas; // pegas singleton instance
 
-AddressSpace::AddressSpace(AddressSpaceOptions& address_space_options)
+AddressSpace::AddressSpace(const AddressSpaceOptions& address_space_options)
     : address_space_options_(address_space_options)
 { }
 
@@ -89,6 +91,13 @@ Region* AddressSpace::region(RegionId region_id)
     }
     return it->second;
 }
+
+
+ErrorCode AddressSpace::rtrans(void* vaddr, Region** pregion, LinearAddr* offset)
+{
+    return mm_->rtrans(vaddr, pregion, offset);
+}
+
 
 // explicit instantiations
 template ErrorCode AddressSpace::map<RRegion>(RegionFile* region_file, RRegion** pregion);

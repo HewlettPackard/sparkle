@@ -19,8 +19,7 @@
 
 #include <pthread.h>
 
-#include "pegasus/region_tmpl.hh"
-#include "pegasus/pointer.hh"
+#include "alps/pegasus/relocatable_region.hh"
 #include "globalheap/slab_heap.hh"
 
 namespace alps {

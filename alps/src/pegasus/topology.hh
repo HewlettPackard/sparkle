@@ -19,7 +19,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "pegasus/interleave_group.hh"
+#include "alps/pegasus/interleave_group.hh"
 
 
 namespace alps {

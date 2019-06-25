@@ -14,12 +14,13 @@
 # limitations under the License.
 #
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
 function (add_alps_example2 targetname srcname binname)
   add_executable(${targetname} ${CMAKE_CURRENT_SOURCE_DIR}/${srcname}.cc)
   set_target_properties(${targetname} PROPERTIES OUTPUT_NAME ${binname})
-  target_link_libraries(${targetname} pthread gtest alps boost_program_options boost_thread boost_filesystem)
+  target_link_libraries(${targetname} pthread gtest alps ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 endfunction()
 
 function (add_alps_example targetname)

@@ -17,6 +17,8 @@
 #ifndef _ALPS_PEGASUS_THREAD_HH_
 #define _ALPS_PEGASUS_THREAD_HH_
 
+#include <stdint.h>
+
 namespace alps {
 
 //forward declaration
@@ -26,7 +28,8 @@ class VmArea;
 class PegasThread {
 public:
     PegasThread()
-        : vmarea_(0x0)
+        : vmarea_version_(0),
+          vmarea_(0x0)
     { }
 
     void set_active_pregion(Region* region)
@@ -40,7 +43,8 @@ public:
     // persistent/transient pointer during translation
     Region* region_;
 
-    VmArea* vmarea_;
+    uint64_t vmarea_version_;
+    VmArea*  vmarea_;
 };
 
 // thread local storage declaration
