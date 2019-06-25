@@ -20,34 +20,20 @@
 #include <sstream>
 #include <vector>
 #include "gtest/gtest.h"
-#include "common/error_stack.hh"
-#include "pegasus/address_space.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/pegasus/address_space.hh"
 #include "test_common.hh"
 
 using namespace alps;
 
 #define MAX_INTERLEAVE_REQUEST_SIZE 1024
 
-class PegasTest : public RegionFileTest { 
-public:
-    void SetUp() {
-        RegionFileTest::__SetUp(false);
-    }
+class PegasTest : public RegionFileTest { };
 
-};
-
-TEST_F(PegasTest, init1)
-{ 
-    Pegasus::init((const char*) NULL);
-}
 
 TEST_F(PegasTest, create)
 { 
     RegionFile* region_file;
 
-    Pegasus::init((const char*) NULL);
-    unlink(test_path("region_create").c_str());
     EXPECT_EQ(kErrorCodeOk, Pegasus::create_region_file(test_path("region_create").c_str(), S_IRUSR | S_IWUSR, &region_file));
     EXPECT_EQ(kErrorCodeOk, region_file->close());
     EXPECT_EQ(0, unlink(test_path("region_create").c_str()));
@@ -58,8 +44,6 @@ TEST_F(PegasTest, create_truncate)
     size_t      test_region_size = booksize() * 8;
     RegionFile* region_file;
 
-    Pegasus::init((const char*) NULL);
-    unlink(test_path("region_create").c_str());
     EXPECT_EQ(kErrorCodeOk, Pegasus::create_region_file(test_path("region_create").c_str(), S_IRUSR | S_IWUSR, &region_file));
     EXPECT_EQ(kErrorCodeOk, region_file->truncate(test_region_size));
     EXPECT_EQ(kErrorCodeOk, region_file->close());
@@ -82,8 +66,6 @@ TEST_F(PegasTest, create_open)
 {
     RegionFile* region_file;
 
-    Pegasus::init((const char*) NULL);
-    unlink(test_path("region_create").c_str());
     EXPECT_EQ(kErrorCodeOk, Pegasus::create_region_file(test_path("region_create").c_str(), S_IRUSR | S_IWUSR, &region_file));
     EXPECT_EQ(kErrorCodeOk, region_file->close());
     EXPECT_EQ(kErrorCodeOk, Pegasus::open_region_file(test_path("region_create").c_str(), O_RDWR, &region_file));
@@ -111,8 +93,6 @@ TEST_F(PegasTest, create_open_map)
     RRegion*    region;
     size_t      test_region_size = booksize() * 8;
 
-    Pegasus::init((const char*) NULL);
-    unlink(test_path("region_create").c_str());
     EXPECT_EQ(kErrorCodeOk, Pegasus::create_region_file(test_path("region_create").c_str(), S_IRUSR | S_IWUSR, &region_file));
     EXPECT_EQ(kErrorCodeOk, region_file->truncate(test_region_size));
     EXPECT_EQ(kErrorCodeOk, region_file->close());

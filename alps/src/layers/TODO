@@ -1,0 +1,19 @@
+API
+iterator API: iterate over available chunks and return descriptors
+
+how do we pick the window over which we iterate
+
+First approach: soft limits
+
+grow_soft
+shrink_soft
+
+grow_hard 
+shrink_hard
+
+Second approach: iterator window 
+ 1. state iterator limits using logical addresses; the heap rounds up and iterates
+ 2. state iterator limits using window size; return the next N zones, or next N extents
+
+PREFER THE SECOND APPROACH
+

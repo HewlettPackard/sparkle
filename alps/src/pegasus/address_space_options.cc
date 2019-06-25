@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-#include "pegasus/address_space_options.hh"
+#include "alps/pegasus/address_space_options.hh"
 
 namespace alps {
 
-ErrorStack AddressSpaceOptions::load(YAML::Node* node) {
-    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, allow_duplicate_mappings);
+ErrorStack AddressSpaceOptions::load(YAML::Node* node, bool ignore_missing) {
+    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, ignore_missing, allow_duplicate_mappings);
     return kRetOk;
 }
 
 
-ErrorStack AddressSpaceOptions::save(YAML::Emitter& out) const {
+ErrorStack AddressSpaceOptions::save(YAML::Emitter* out) const {
     return kRetOk;
 }
 

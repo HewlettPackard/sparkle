@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "pegasus/pegasus_options.hh"
+#include "alps/pegasus/pegasus_options.hh"
 
 namespace alps {
 
@@ -38,16 +38,15 @@ std::vector< const Externalizable* > get_children(const PegasusOptions* option) 
 }
 
 
-ErrorStack PegasusOptions::load(YAML::Node* node) {
-    *this = PegasusOptions();  // This guarantees default values for optional XML elements.
+ErrorStack PegasusOptions::load(YAML::Node* node, bool ignore_missing) {
     for (Externalizable* child : get_children(this)) {
-        CHECK_ERROR(get_child_element(node, child->get_tag_name(), child));
+        CHECK_ERROR(get_child_element(node, child->get_tag_name(), child, ignore_missing));
     }
     return kRetOk;
 }
 
 
-ErrorStack PegasusOptions::save(YAML::Emitter& out) const {
+ErrorStack PegasusOptions::save(YAML::Emitter* out) const {
     return kRetOk;
 }
 

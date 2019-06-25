@@ -26,9 +26,9 @@ set_property(GLOBAL APPEND PROPERTY ALL_ALPS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/pegasthread.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/pegasus_options.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/pegasus.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/region.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/region_file.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/region_file_factory.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/region_tmpl.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/segmap.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpfs_options.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/tmpfs_region_file.cc

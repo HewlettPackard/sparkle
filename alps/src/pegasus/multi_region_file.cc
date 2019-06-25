@@ -15,10 +15,13 @@
  */
 
 #include "pegasus/multi_region_file.hh"
+
 #include <algorithm>
+
+#include "alps/common/error_code.hh"
+#include "alps/common/error_stack.hh"
+
 #include "common/debug.hh"
-#include "common/error_code.hh"
-#include "common/error_stack.hh"
 #include "pegasus/region_file.hh"
 
 

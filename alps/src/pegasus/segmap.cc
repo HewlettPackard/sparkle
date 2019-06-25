@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-#include "pegasus/segmap.hh"
-#include "common/error_code.hh"
+#include "alps/pegasus/bits/segmap.hh"
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/address_space.hh"
+#include "alps/pegasus/region.hh"
+
 #include "common/debug.hh"
-#include "pegasus/address_space.hh"
 #include "pegasus/mm.hh"
-#include "pegasus/region.hh"
+#include "pegasus/region_file.hh"
 #include "pegasus/vmarea.hh"
 
 namespace alps {
 
-ErrorCode SegmentMap::map_all()
+ErrorCode SegmentMap::map()
 {
     void*    addr_hint = NULL;
     int      prot = PROT_READ | PROT_WRITE;
@@ -40,7 +42,7 @@ ErrorCode SegmentMap::map_all()
     return kErrorCodeOk;
 }
 
-ErrorCode SegmentMap::unmap_all()
+ErrorCode SegmentMap::unmap()
 {
     void* addr = reinterpret_cast<void*>(tbl_[0]);
     CHECK_ERROR_CODE(region_->address_space()->mm()->unmap(region_, addr, region_->length()));

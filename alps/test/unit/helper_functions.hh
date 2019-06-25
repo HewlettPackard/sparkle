@@ -19,9 +19,9 @@
 
 #include <vector>
 #include <boost/filesystem.hpp>
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
+#include "alps/pegasus/interleave_group.hh"
 #include "pegasus/helper_functions.hh"
-#include "pegasus/interleave_group.hh"
 
 namespace alps {
 

@@ -24,19 +24,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#include <chrono>
-#include <fstream>
-#include <sstream>
-
 #include <linux/magic.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/vfs.h>
+
+#include <chrono>
+#include <fstream>
+#include <regex>
+#include <sstream>
+
+#include "boost/filesystem.hpp"
 #include "boost/filesystem/path.hpp"
 #include "boost/filesystem/operations.hpp"
 
-#include "common/debug.hh"
+#include "alps/common/debug.hh"
 
 namespace alps {
 
@@ -319,6 +321,61 @@ bool fs_create_directory(const boost::filesystem::path& p, bool sync) {
     return true;
   }
 }
+
+
+void fs_list_entries(const boost::filesystem::path& path, std::list<boost::filesystem::path>* file_list) 
+{
+    if (boost::filesystem::is_directory(path)) {
+        for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(path), {})) {
+            file_list->push_back(entry);
+        }
+    }
+}
+
+
+void fs_remove_matched(const boost::filesystem::path& dir, const std::regex regex, bool wait_for_reclamation, int timeout_sec)
+{
+    struct statfs statfs_buf;
+    assert(statfs(dir.string().c_str(), &statfs_buf) == 0);
+
+    size_t block_size = statfs_buf.f_frsize;
+    size_t old_free_blocks = statfs_buf.f_bfree;
+    size_t deleted_blocks = 0;  // this is a low bound
+
+    std::list<boost::filesystem::path> lst;
+    fs_list_entries(dir, &lst);
+    for (auto& entry: lst) {
+        if (std::regex_match(boost::filesystem::basename(entry), regex)) {
+            struct stat stat_buf;
+            //The correct way is to wait for allocated blocks to be reclaimed, but 
+            //LFS does not correctly report the number of allocated blocks.
+            //assert(stat(entry.string().c_str(), &stat_buf) == 0);
+            //deleted_blocks += (stat_buf.st_blocks * 512) / block_size;
+            deleted_blocks += boost::filesystem::file_size(entry) / block_size;
+            boost::filesystem::remove(entry);
+        }
+    }
+    
+    if (wait_for_reclamation) {
+        // now wait for free space to be reclaimed
+        std::chrono::time_point<std::chrono::system_clock> start, end;
+        start = std::chrono::system_clock::now();
+        for (;;) {
+            assert(statfs(dir.string().c_str(), &statfs_buf) == 0);
+            size_t free_blocks = statfs_buf.f_bfree;
+            if (free_blocks >= old_free_blocks + deleted_blocks) {
+                break;
+            }
+            end = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed = end-start;
+            if (elapsed.count() > timeout_sec) {
+                break;
+            }   
+            sleep(1);
+        }
+    }
+}
+
 
 ProcessMap::ProcessMap()
     : ProcessMap(getpid())

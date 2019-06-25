@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include "common/assorted_func.hh"
+#include "alps/common/assorted_func.hh"
+
 #include <string>
 #include <cstring>
 #include <iostream>

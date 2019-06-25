@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#include "common/error_stack.hh"
+#include "alps/common/error_stack.hh"
 
 #include <iostream>
 #include <sstream>
 #include <string>
 
-#include "common/assert_nd.hh"
-#include "common/assorted_func.hh"
-#include "common/debug.hh"
+#include "alps/common/assert_nd.hh"
+#include "alps/common/assorted_func.hh"
+#include "alps/common/debug.hh"
 
 namespace alps {
 void ErrorStack::output(std::ostream* ptr) const {

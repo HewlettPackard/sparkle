@@ -20,8 +20,6 @@ set(ALPS_PROJECT_VERSION 0.1.0)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(HOLODECK_DIR /scratch/workspace/holodeck) 
-
 include(cmake/internal_utils.cmake)
 
 # compiler flags for all build types
@@ -75,7 +73,12 @@ add_subdirectory(examples)
 enable_testing()
 add_subdirectory(test)
 
-# packaging
+###############################################################################
+#
+#                           Install headers/libraries
+#
+###############################################################################
+
 set(CPACK_PACKAGE_VERSION ${ALPS_PROJECT_VERSION})
 set(CPACK_GENERATOR "TGZ")
 set(CPACK_PACKAGE_NAME "alps")

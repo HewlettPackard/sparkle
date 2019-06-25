@@ -76,7 +76,8 @@
 #include <boost/archive/binary_iarchive.hpp> 
 
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
+
 #include "common/debug.hh"
 #include "common/os.hh"
 
@@ -224,10 +225,10 @@ ErrorCode TmpfsRegionFile::__alloc_physical_frames(int fd, loff_t offset, loff_t
     switch (interleave_policy_) {
         // allocate based on the user's interleave request
         case kPreciseAllocate:
-            if (map.find("user.interleave_request") == map.end()) {
+            if (map.find("user.LFS.InterleaveRequest") == map.end()) {
                 interleave_request = "";
             } else {
-                interleave_request = map["user.interleave_request"];
+                interleave_request = map["user.LFS.InterleaveRequest"];
             }
             break;
 
@@ -276,7 +277,7 @@ ErrorCode TmpfsRegionFile::__alloc_physical_frames(int fd, loff_t offset, loff_t
     }
 
     // describe where each book in the file is allocated 
-    map["user.interleave"] = interleave_request;
+    map["user.LFS.Interleave"] = interleave_request;
     save_xattr_map(xpathname_.c_str(), map);
 
     return kErrorCodeOk;
@@ -418,7 +419,8 @@ ErrorCode TmpfsRegionFile::getxattr(const char *name, void *value, size_t size)
         return kErrorCodeGeneric;
     }
     std::string vval = map[std::string(name)];
-    memcpy(value, vval.c_str(), vval.size());
+    size_t cp_size = size < vval.size() ? size : vval.size();
+    memcpy(value, vval.c_str(), cp_size);
 
     tmpfs_release_global();
 

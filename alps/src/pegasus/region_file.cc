@@ -15,10 +15,13 @@
  */
 
 #include "pegasus/region_file.hh"
+
 #include <vector>
-#include "common/assorted_func.hh"
+
+#include "alps/common/assorted_func.hh"
+#include "alps/pegasus/interleave_group.hh"
+
 #include "common/debug.hh"
-#include "pegasus/interleave_group.hh"
 
 namespace alps {
 
@@ -34,7 +37,9 @@ ErrorCode RegionFile::set_interleave_group(loff_t offset, loff_t length, const s
     loff_t new_num_books = (end > file_size) ? end / booksize() : file_size / booksize();
     uint8_t* igbuf = new uint8_t[new_num_books];
 
-    if (getxattr("user.interleave_request", igbuf, old_num_books) != kErrorCodeOk) {
+    CHECK_ERROR_CODE(setxattr("user.LFS.AllocationPolicy", "RequestIG", 9, 0));
+
+    if (getxattr("user.LFS.Interleave", igbuf, old_num_books) != kErrorCodeOk) {
         // attribute not set -- consider it zero
         for (int i=0; i<new_num_books; i++) {
             igbuf[i] = 0;
@@ -50,11 +55,7 @@ ErrorCode RegionFile::set_interleave_group(loff_t offset, loff_t length, const s
     {
         igbuf[idx] = vig[idx % vig.size()];
     }
-    CHECK_ERROR_CODE2(setxattr("user.interleave_request", igbuf, new_num_books, 0), delete[] igbuf);
-
-
-    uint8_t* igbuf_new = new uint8_t[new_num_books];
-    getxattr("user.interleave", igbuf_new, new_num_books);
+    CHECK_ERROR_CODE2(setxattr("user.LFS.InterleaveRequest", igbuf, new_num_books, 0), delete[] igbuf);
 
     delete[] igbuf;
 
@@ -74,7 +75,7 @@ ErrorCode RegionFile::interleave_group(loff_t offset, loff_t length, std::vector
     loff_t total_num_books = (roundup_file_size) / booksize();
     uint8_t* igbuf = new uint8_t[total_num_books];
 
-    CHECK_ERROR_CODE2(getxattr("user.interleave", igbuf, total_num_books), delete[] igbuf);
+    CHECK_ERROR_CODE2(getxattr("user.LFS.Interleave", igbuf, total_num_books), delete[] igbuf);
 
     int idx;
     loff_t off;

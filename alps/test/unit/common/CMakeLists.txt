@@ -19,4 +19,5 @@ function (add_common_test targetname)
   target_link_libraries(${targetname} alps boost_thread)
 endfunction()
 
+add_common_test(test_options)
 add_common_test(test_os)

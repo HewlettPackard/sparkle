@@ -13,19 +13,19 @@
 [//]: # ( limitations under the License.                                           )
 
 
-Welcome to the ALPINiSM documentation!
+Welcome to the Alps documentation!
 
-This readme will walk you through navigating and building the ALPINiSM 
-documentation, which is included here with the ALPINiSM source code. 
+This readme will walk you through navigating and building the Alps
+documentation, which is included here with the Alps source code. 
 
 Read on to learn more about viewing documentation in plain text (i.e., markdown) 
 or building the documentation yourself. Why build it yourself? So that you have 
-the docs that corresponds to whichever version of ALPINiSM you currently have 
+the docs that corresponds to whichever version of Alps you currently have 
 checked out of revision control.
 
-## Generating the Documentation HTML
+## Generating the Documentation
 
-We include the ALPINiSM documentation as part of the source (as opposed to using 
+We include the Alps documentation as part of the source (as opposed to using 
 a hosted wiki, such as the github wiki, as the definitive documentation) to 
 enable the documentation to evolve along with the source code and be captured 
 by revision control (currently git). This way the code automatically includes 
@@ -38,9 +38,13 @@ To compile the documentation:
     $ doxygen
  
 Generated documentation is placed under: 
- - HTML: $ALPINISM/doc/dox/html
- - LaTeX: $ALPINISM/doc/dox/latex
+ - HTML: $ALPS/doc/dox/html
+ - LaTeX: $ALPS/doc/dox/latex
 
+## Adding the Alps logo to the Latex Documentation
 
----
-Note: Adapted from $spark/docs/README.md
+- Copy $ALPS/doc/figures/alps-logo.pdf to $ALPS/doc/dox/latex
+- Add the following to the titlepage in refman.tex 
+
+\vspace{1cm}
+\includegraphics{alps-logo}

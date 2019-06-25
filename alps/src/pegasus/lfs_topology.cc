@@ -16,11 +16,13 @@
 
 #include <numa.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/syscall.h>   /* For SYS_xxx definitions */
 
 #include <iostream>
 
-#include "common/assorted_func.hh"
+#include "alps/common/assorted_func.hh"
+
 #include "common/os.hh"
 #include "pegasus/lfs_topology.hh"
 
@@ -31,30 +33,52 @@ Topology* LfsTopology::construct(const boost::filesystem::path& pathname, const 
     return new LfsTopology(pathname, pegasus_options);
 }
 
+
 LfsTopology::LfsTopology(const boost::filesystem::path& pathname, const PegasusOptions& pegasus_options)
-    : last_is_valid_(false)
+    : lfs_options_(pegasus_options.lfs_options),
+      is_stale_(true),
+      node_count_(pegasus_options.lfs_options.node_count)
 {
-    node_running_on();
+    // initialize topology information
+    update();
 }
+
+
+void LfsTopology::update()
+{
+    char* envvar;
+
+    // Offset nodes by 1 as LFS numbers nodes by starting at 1 but 
+    // RMB numbers them by starting at 0
+    last_node_ = lfs_options_.node - 1;
+    max_node_ = node_count_ - 1;
+    is_stale_ = false;
+}
+
 
 InterleaveGroup LfsTopology::max_interleave_group()
 {
-    assert(0 && "functionality not implemented");
-    return 0;
+    if (is_stale_) {
+        update();
+    }
+    return max_node_;
 }
+
 
 unsigned int LfsTopology::node_running_on()
 {
-    assert(0 && "functionality not implemented");
-    return 0;
+    if (is_stale_) {
+        update();
+    }
+    return last_node_;
 }
 
 
 InterleaveGroup LfsTopology::nearest_ig()
 {
-    assert(0 && "functionality not implemented");
-    return 0;
+    return node_running_on();
 }
+
 
 LfsTopology::~LfsTopology()
 {

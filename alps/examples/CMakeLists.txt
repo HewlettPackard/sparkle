@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
 function (add_alps_example2 targetname srcname binname)
@@ -25,5 +26,3 @@ endfunction()
 function (add_alps_example targetname)
   add_alps_example2(${targetname} ${targetname} ${targetname})
 endfunction()
-
-add_subdirectory(globalheap)

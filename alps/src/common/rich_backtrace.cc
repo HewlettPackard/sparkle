@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "common/assorted_func.hh"
+#include "alps/common/assorted_func.hh"
 
 namespace alps {
 

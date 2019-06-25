@@ -17,7 +17,8 @@
 #ifndef _ALPS_PEGASUS_TMPFS_TOPOLOGY_HH_
 #define _ALPS_PEGASUS_TMPFS_TOPOLOGY_HH_
 
-#include "pegasus/pegasus_options.hh"
+#include "alps/pegasus/pegasus_options.hh"
+
 #include "pegasus/topology.hh"
 
 namespace alps {
@@ -39,10 +40,12 @@ public:
     int run_on_node(int n);
 
 private:
+    void update();
     unsigned int node_running_on();
 
 private:
-    bool last_node_is_valid_;
+    bool is_stale_; // whether topology has changed, and therefore cached values are stale
+    unsigned int max_node_;
     unsigned int last_node_;
 };
 

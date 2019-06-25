@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-#include "pegasus/lfs_options.hh"
+#include "alps/pegasus/lfs_options.hh"
 
 namespace alps {
 
-ErrorStack LfsOptions::load(YAML::Node* node) {
-    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, booksize);
-    EXTERNALIZE_LOAD_SIZE_ELEMENT(node, nodes);
+ErrorStack LfsOptions::load(YAML::Node* ymlnode, bool ignore_missing) {
+    EXTERNALIZE_LOAD_ELEMENT(ymlnode, ignore_missing, node);
+    EXTERNALIZE_LOAD_ELEMENT(ymlnode, ignore_missing, node_count);
+    EXTERNALIZE_LOAD_SIZE_ELEMENT(ymlnode, ignore_missing, book_size_bytes);
     return kRetOk;
 }
 
-ErrorStack LfsOptions::save(YAML::Emitter& out) const {
+ErrorStack LfsOptions::save(YAML::Emitter* out) const {
     return kRetOk;
 }
 

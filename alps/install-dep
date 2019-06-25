@@ -1,0 +1,110 @@
+#!/bin/bash
+
+#
+# A shell script to install dependencies including Linux and Python packages 
+#
+
+
+HTTP_PROXY="http://web-proxy.labs.hpecorp.net:8088"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' 
+
+PATH=${PATH}:/sbin:/usr/sbin
+
+# Check if a string (first argument) exists in the remaining argument list
+list_has_string() {
+  local str=$1
+  shift
+  while test $# -gt 0
+  do
+    if [[ $1 == ${str} ]]; then 
+      echo 'true'
+      return
+    fi
+    shift
+  done
+  echo 'false'
+}
+
+
+# Sets variables OS and VER to distribution family (e.g. Debian, Redhat) 
+# and version
+distribution() {
+  if [ -f /etc/lsb-release ]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    VER=$DISTRIB_RELEASE
+  elif [ -f /etc/debian_version ]; then
+    OS=Debian  # XXX or Ubuntu??
+    VER=$(cat /etc/debian_version)
+  elif [ -f /etc/redhat-release ]; then
+    OS=Redhat # XXX or CentOS??
+    VER=$(cat /etc/redhat-release)
+  else
+    OS=$(uname -s)
+    VER=$(uname -r)
+  fi
+}
+
+
+# Installs L4TM packages
+install_l4tm() {
+  printf "${GREEN}Installing L4TM packages... ${NC}\n"
+
+  sudo apt-get install \
+    cmake \
+    libattr1-dev \
+    libboost-all-dev \
+    libevent-dev \
+    libfam-atomic2 \
+    libfam-atomic2-dbg \
+    libfam-atomic2-dev \
+    libpmem \
+    libpmem-dev \
+    libnuma1 \
+    libnuma-dev \
+    libyaml-cpp-dev
+}
+
+
+# Installs RedHat packages
+install_redhat() {
+  printf "${GREEN}Installing RedHat packages... ${NC}\n"
+  printf "${RED}Functionality not implemented ${NC}\n"
+}
+
+
+# Installs Python packages using PIP
+install_pip() {
+  printf "${GREEN}Installing Python packages ${NC}\n"
+
+  pip install -r requirements.txt --proxy=${HTTP_PROXY}
+}
+
+
+usage() {
+  echo "Usage: $0 [--no-pip]"
+  exit
+}
+
+###########################################################################
+#                                  MAIN 
+###########################################################################
+
+opts=${@:1}
+
+if [[ $(list_has_string '--help' ${opts}) == "true" ]]; then
+  usage
+fi
+
+distribution # sets OS and VER
+
+if [[ ${OS} == "Debian" ]]; then
+  install_l4tm
+elif [[ ${OS} == "Redhat" ]]; then
+  install_redhat
+else
+  echo "Not supported distribution ${OS} ${VER}"
+fi

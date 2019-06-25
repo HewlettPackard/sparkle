@@ -17,7 +17,7 @@
 #ifndef _ALPS_PEGASUS_MEMORY_MANAGEMENT_HH_
 #define _ALPS_PEGASUS_MEMORY_MANAGEMENT_HH_
 
-#include "common/error_code.hh"
+#include "alps/common/error_code.hh"
 #include "pegasus/invtbl.hh"
 
 namespace alps {
@@ -27,7 +27,7 @@ class MemoryManager;
 class VmArea;
 
 /**
- * @brief The memory manager provides mechanism for directly mapping persistent 
+ * \brief The memory manager provides a mechanism for directly mapping persistent 
  * region files to virtual memory regions.
  * 
  * The manager is intended for use by a per-region memory mapper (MemoryMap) 

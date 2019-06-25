@@ -17,6 +17,7 @@
 #include "pegasus/lfs_region_file.hh"
 
 #include <fcntl.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <attr/xattr.h>
@@ -25,7 +26,8 @@
 #include <boost/filesystem/operations.hpp>
 
 
-#include "common/assert_nd.hh"
+#include "alps/common/assert_nd.hh"
+
 #include "common/debug.hh"
 #include "common/os.hh"
 
@@ -97,7 +99,9 @@ ErrorCode LfsRegionFile::truncate(loff_t length)
 
 ErrorCode LfsRegionFile::getxattr(const char *name, void *value, size_t size)
 {
+    LOG(info) << "name == " << name << ", size == " << size;
     if (::fgetxattr(fd_, name, value, size) < 0) {
+        LOG(error) << strerror(errno);
         return kErrorCodeFsGetxattrFailed;
     }
     return kErrorCodeOk;
@@ -105,7 +109,9 @@ ErrorCode LfsRegionFile::getxattr(const char *name, void *value, size_t size)
 
 ErrorCode LfsRegionFile::setxattr(const char *name, const void *value, size_t size, int flags)
 {
+    LOG(info) << "name == " << name << ", size == " << size;
     if (::fsetxattr(fd_, name, value, size, flags) < 0) {
+        LOG(error) << strerror(errno);
         return kErrorCodeFsSetxattrFailed;
     }
     return kErrorCodeOk;

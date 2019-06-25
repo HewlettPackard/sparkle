@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-#include "pegasus/pegasus.hh"
+#include "alps/pegasus/pegasus.hh"
+
 #include <vector>
 #include <boost/filesystem.hpp>
-#include "common/error_code.hh"
-#include "common/error_stack.hh"
-#include "common/log.hh"
-#include "pegasus/address_space.hh"
+
+#include "alps/common/error_code.hh"
+#include "alps/common/error_stack.hh"
+#include "alps/pegasus/address_space.hh"
+#include "alps/pegasus/pegasus_options.hh"
+
+#include "common/debug.hh"
 #include "pegasus/lfs_region_file.hh"
 #include "pegasus/lfs_topology.hh"
-#include "pegasus/pegasus_options.hh"
 #include "pegasus/region_file_factory.hh"
 #include "pegasus/region_file.hh"
 #include "pegasus/tmpfs_region_file.hh"
@@ -38,16 +41,63 @@ TopologyFactory* Pegasus::topology_factory_;
 
 bool Pegasus::initialized_ = false;
 
-ErrorStack Pegasus::init(PegasusOptions* pegasus_options) 
+ErrorStack Pegasus::load_options(const char* config_file, bool use_system_wide_conf, bool use_environ_conf, PegasusOptions* pegasus_options) 
+{
+    const char* system_wide_conf_yaml[] = { "/etc/default/alps.yaml",
+                                            "/etc/default/alps.yml", 0 };
+    const char* environ_conf_varname = "ALPS_CONF";
+
+    // Allow missing parameters as this initialization guarantees default 
+    // values for optional/missing YAML elements when loading from files.
+    *pegasus_options = PegasusOptions();  
+
+    if (!pegasus_options) {
+        return ERROR_STACK_MSG(kErrorCodeInvalidParameter, "Passed PegasusOptions object is NULL");
+    }
+
+    if (use_system_wide_conf) {
+        for (int i=0; system_wide_conf_yaml[i] != 0; i++) {
+            if (boost::filesystem::exists(system_wide_conf_yaml[i])) {
+                CHECK_ERROR(pegasus_options->load_from_file(system_wide_conf_yaml[i], true));
+                break;
+            } 
+        }
+    }
+
+    if (use_environ_conf) {
+        const char* env_config_file = getenv(environ_conf_varname);
+        if (env_config_file) {
+            CHECK_ERROR(pegasus_options->load_from_file(env_config_file, true));
+        }
+    }
+
+    if (config_file) {
+        CHECK_ERROR(pegasus_options->load_from_file(config_file, true));
+    }
+
+    return kRetOk;
+}
+
+
+ErrorStack Pegasus::init(const char* config_file, bool use_system_wide_conf, bool use_environ) 
+{
+    PegasusOptions pegasus_options;
+
+    CHECK_ERROR(load_options(config_file, use_system_wide_conf, use_environ, &pegasus_options));
+    return Pegasus::init(pegasus_options);
+}
+
+
+ErrorStack Pegasus::init(const PegasusOptions& pegasus_options) 
 {
     if (initialized_) {
         return kRetOk;
     }
-    init_log(pegasus_options->debug_options);
+    init_log(pegasus_options.debug_options);
 
-    address_space_ = new AddressSpace(pegasus_options->address_space_options);
-    region_file_factory_ = new RegionFileFactory(*pegasus_options);
-    topology_factory_ = new TopologyFactory(*pegasus_options);
+    address_space_ = new AddressSpace(pegasus_options.address_space_options);
+    region_file_factory_ = new RegionFileFactory(pegasus_options);
+    topology_factory_ = new TopologyFactory(pegasus_options);
     CHECK_OUTOFMEMORY(address_space_); 
     CHECK_OUTOFMEMORY(region_file_factory_);
     CHECK_OUTOFMEMORY(topology_factory_);
@@ -66,16 +116,6 @@ ErrorStack Pegasus::init(PegasusOptions* pegasus_options)
     return kRetOk;
 }
 
-ErrorStack Pegasus::init(const char* config_file) 
-{
-    PegasusOptions* pegasus_options;
-    pegasus_options = new PegasusOptions();
-    CHECK_OUTOFMEMORY(pegasus_options);
-    if (config_file) {
-        CHECK_ERROR(pegasus_options->load_from_file(config_file));
-    }
-    return Pegasus::init(pegasus_options);
-}
 
 std::vector<boost::filesystem::path> path_vector(const char** pathnames, int npathnames)
 {

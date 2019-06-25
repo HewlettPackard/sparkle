@@ -15,9 +15,13 @@
  */
 
 #include "pegasus/helper_functions.hh"
+
 #include <thread>
+
+#include "alps/pegasus/pegasus.hh"
+
+#include "common/debug.hh"
 #include "pegasus/region_file.hh"
-#include "pegasus/pegasus.hh"
 #include "pegasus/topology.hh"
 #include "pegasus/topology_factory.hh"
 

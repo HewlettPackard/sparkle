@@ -15,9 +15,7 @@
  */
 
 #include <fcntl.h>
-#include "common/error_code.hh"
-#include "pegasus/address_space.hh"
-#include "pegasus/region_tmpl.hh"
+#include "alps/pegasus/address_space.hh"
 #include "test_common.hh"
 #include "helper_functions.hh"
 
