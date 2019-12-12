@@ -21,4 +21,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library(jnishmshuffle SHARED $<TARGET_OBJECTS:shuffle> $<TARGET_OBJECTS:jnishuffle>)
 
 ## later, to find automatically the following shared libraries.
-target_link_libraries(jnishmshuffle ${ALPS_LIBRARY} shm_management tcmalloc ${TBB_LIBRARY} numa glog rt)
+target_link_libraries(jnishmshuffle ${ALPS_LIBRARY} shm_management ${TBB_LIBRARY} numa glog rt)

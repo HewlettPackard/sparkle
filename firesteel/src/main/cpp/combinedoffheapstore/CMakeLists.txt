@@ -21,4 +21,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library(jnishmoffheapstore SHARED $<TARGET_OBJECTS:offheapstore> $<TARGET_OBJECTS:jnioffheapstore>)
 
 ## later, to find automatically the following shared libraries.
-target_link_libraries(jnishmoffheapstore ${ALPS_LIBRARY} shm_management tcmalloc ${TBB_LIBRARY} numa glog rt)
+target_link_libraries(jnishmoffheapstore ${ALPS_LIBRARY} shm_management ${TBB_LIBRARY} numa glog rt)

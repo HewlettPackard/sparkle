@@ -35,4 +35,4 @@ add_library(shm_management SHARED ${TMP_ALL_SHMMANAGEMENT_SRC})
 install (TARGETS shm_management DESTINATION lib)
 
 ## later, to find automatically the following shared libraries.
-target_link_libraries(shm_management ${ALPS_LIBRARY} tcmalloc glog)
+target_link_libraries(shm_management ${ALPS_LIBRARY} glog)
