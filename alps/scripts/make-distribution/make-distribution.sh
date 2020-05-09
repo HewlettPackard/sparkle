@@ -8,7 +8,7 @@ fi
 PROJECT_DIR=$1
 DISTRIBUTION_DIR=$2
 
-if [ -f ${DISTRIBUTION_DIR} ] || [ -f ${DISTRIBUTION_DIR} ]; then
+if [ -d ${DISTRIBUTION_DIR} ]; then
   echo "Path ${DISTRIBUTION_DIR} already exists"
   exit
 fi
